@@ -1,3 +1,5 @@
+<!-- This is a copy of https://open.edx.org/code-of-conduct/ -->
+
 # Open edX Code of Conduct
 
 ## The Mission
