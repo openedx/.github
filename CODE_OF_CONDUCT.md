@@ -2,6 +2,8 @@
 
 # Open edX Code of Conduct
 
+(This is a GitHub-hosted copy of the official Code at [Open edX Community Code of Conduct](https://open.edx.org/code-of-conduct/).
+
 ## The Mission
 
 edX and the Open edX community seek to foster an open and welcoming environment to as wide a range of participants as possible. This mission takes priority over the letter of the rules.
