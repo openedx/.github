@@ -2,7 +2,7 @@
 
 # Open edX Code of Conduct
 
-(This is a GitHub-hosted copy of the official Code at [Open edX Community Code of Conduct](https://open.edx.org/code-of-conduct/).
+(This is a GitHub-hosted copy of the official Code at [Open edX Community Code of Conduct](https://open.edx.org/code-of-conduct/).)
 
 ## The Mission
 
