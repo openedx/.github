@@ -1,0 +1,11 @@
+{
+    "name": "Publish Python Package",
+    "description": "Use this workflow to publish your package to PyPI",
+    "iconName": "edx-workflow-template-icon",
+    "categories": [
+        "python"
+    ],
+    "filePatterns": [
+        "setup.py$"
+    ]
+}

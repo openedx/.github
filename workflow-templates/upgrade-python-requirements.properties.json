@@ -1,7 +1,7 @@
 {
     "name": "Python Requirements Upgrade Workflow",
     "description": "Use this workflow to regularly run `make upgrade` to keep your python requirements up to date",
-    "iconName": "upgrade-python-requirements-icon",
+    "iconName": "edx-workflow-template-icon",
     "categories": [
         "python"
     ],
