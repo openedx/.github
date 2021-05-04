@@ -1,0 +1,11 @@
+{
+    "name": "Publish Node.js Package",
+    "description": "Use this workflow to publish your package to NPM",
+    "iconName": "edx-workflow-template-icon",
+    "categories": [
+        "javascript"
+    ],
+    "filePatterns": [
+        "package.json$"
+    ]
+}
