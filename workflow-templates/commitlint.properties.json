@@ -1,0 +1,7 @@
+{
+    "name": "Commitlint Workflow",
+    "description": "Run commitlint on the commits in a pull request",
+    "iconName": "edx-workflow-template-icon",
+    "categories": [],
+    "filePatterns": []
+}
