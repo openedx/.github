@@ -1,0 +1,101 @@
+name: Upgrade Requirements
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        description: "Target branch to create requirements PR against"
+        required: false
+        default: "master"
+        type: string
+      team_reviewers:
+        description: "PR Reviewing Team"
+        required: false
+        default: "arbi-bom"
+        type: string
+      email_address:
+        description: "Email Will be sent to this email address"
+        required: false
+        default: "arbi-bom@edx.org"
+        type: string
+      send_success_notification:
+        description: "Boolean Flag to decide whether to send email on successful execution of the workflow"
+        required: false
+        default: false
+        type: boolean
+    secrets:
+      requirements_bot_github_token:
+        required: true
+      requirements_bot_github_email:
+        required: true
+      edx_smtp_username:
+        required: true
+      edx_smtp_password:
+        required: true
+        
+jobs:
+  upgrade_requirements:
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        python-version: ["3.8"]
+
+    steps:
+      - name: setup target branch
+        run: echo "target_branch=$(if ['${{ inputs.branch }}' = '']; then echo 'master'; else echo '${{ inputs.branch }}'; fi)" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v1
+        with:
+          ref: ${{ env.target_branch }}
+
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: make upgrade
+        run: |
+          cd $GITHUB_WORKSPACE
+          make upgrade
+      - name: setup testeng-ci
+        run: |
+          git clone https://github.com/edx/testeng-ci.git
+          cd $GITHUB_WORKSPACE/testeng-ci
+          pip install -r requirements/base.txt
+      - name: create pull request
+        env:
+          GITHUB_TOKEN: ${{ secrets.requirements_bot_github_token }}
+          GITHUB_USER_EMAIL: ${{ secrets.requirements_bot_github_email }}
+        run: |
+          cd $GITHUB_WORKSPACE/testeng-ci
+          python -m jenkins.pull_request_creator --repo-root=$GITHUB_WORKSPACE \
+          --target-branch="${{ env.target_branch }}" --base-branch-name="upgrade-python-requirements" \
+          --commit-message="chore: Updating Python Requirements" --pr-title="Python Requirements Update" \
+          --pr-body="Python requirements update.Please review the [changelogs](https://openedx.atlassian.net/wiki/spaces/TE/pages/1001521320/Python+Package+Changelogs) for the upgraded packages." \
+          --user-reviewers="" --team-reviewers=${{ inputs.team_reviewers }} --delete-old-pull-requests
+      - name: Send failure notification
+        if: ${{ failure() }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: email-smtp.us-east-1.amazonaws.com
+          server_port: 465
+          username: ${{secrets.edx_smtp_username}}
+          password: ${{secrets.edx_smtp_password}}
+          subject: Upgrade python requirements workflow failed in ${{github.repository}}
+          to: ${{ inputs.email_address }}
+          from: github-actions <github-actions@edx.org>
+          body: Upgrade python requirements workflow in ${{github.repository}} failed! For details see "github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - name: Send success notification
+        if: ${{ inputs.send_success_notification }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: email-smtp.us-east-1.amazonaws.com
+          server_port: 465
+          username: ${{secrets.edx_smtp_username}}
+          password: ${{secrets.edx_smtp_password}}
+          subject: Upgrade python requirements workflow executed successfully in ${{github.repository}}
+          to: ${{ inputs.email_address }}
+          from: github-actions <github-actions@edx.org>
+          body: Upgrade python requirements workflow executed in ${{github.repository}}. For details see "github.com/${{ github.repository }}/pulls"
