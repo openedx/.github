@@ -4,22 +4,27 @@ on:
   workflow_call:
     inputs:
       branch:
-        description: "Target branch to create requirements PR against"
+        description: "Target branch against which to create requirements PR"
         required: false
         default: "master"
         type: string
-      team_reviewers:
-        description: "PR Reviewing Team"
+      user_reviewers:
+        description: "Comma separated list of Github users to be tagged on pull requests"
         required: false
-        default: "arbi-bom"
+        default: ""
+        type: string
+      team_reviewers:
+        description: "Comma separated list of Github teams to be tagged on pull requests. NOTE: Teams must have explicit write access to the repo, or Github will refuse to tag them and the workflow will fail."
+        required: false
+        default: ""
         type: string
       email_address:
-        description: "Email Will be sent to this email address"
+        description: "Success (and failure, if applicable) notification emails will be sent to this email address"
         required: false
-        default: "arbi-bom@edx.org"
+        default: ""
         type: string
       send_success_notification:
-        description: "Boolean Flag to decide whether to send email on successful execution of the workflow"
+        description: "Whether to send email on successful execution of the workflow. Default is to send only on failure."
         required: false
         default: false
         type: boolean
@@ -32,7 +37,7 @@ on:
         required: true
       edx_smtp_password:
         required: true
-        
+
 jobs:
   upgrade_requirements:
     runs-on: ubuntu-20.04
@@ -45,7 +50,7 @@ jobs:
       - name: setup target branch
         run: echo "target_branch=$(if ['${{ inputs.branch }}' = '']; then echo 'master'; else echo '${{ inputs.branch }}'; fi)" >> $GITHUB_ENV
 
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         with:
           ref: ${{ env.target_branch }}
 
@@ -58,12 +63,14 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           make upgrade
+
       - name: setup testeng-ci
         run: |
           git clone https://github.com/edx/testeng-ci.git
           cd $GITHUB_WORKSPACE/testeng-ci
           pip install -r requirements/base.txt
       - name: create pull request
+        id: createpullrequest
         env:
           GITHUB_TOKEN: ${{ secrets.requirements_bot_github_token }}
           GITHUB_USER_EMAIL: ${{ secrets.requirements_bot_github_email }}
@@ -73,9 +80,12 @@ jobs:
           --target-branch="${{ env.target_branch }}" --base-branch-name="upgrade-python-requirements" \
           --commit-message="chore: Updating Python Requirements" --pr-title="Python Requirements Update" \
           --pr-body="Python requirements update.Please review the [changelogs](https://openedx.atlassian.net/wiki/spaces/TE/pages/1001521320/Python+Package+Changelogs) for the upgraded packages." \
-          --user-reviewers="" --team-reviewers=${{ inputs.team_reviewers }} --delete-old-pull-requests
+          --user-reviewers="${{ inputs.user_reviewers }}" \
+          --team-reviewers="${{ inputs.team_reviewers }}" \
+          --delete-old-pull-requests --output-pr-url-for-github-action
+
       - name: Send failure notification
-        if: ${{ failure() }}
+        if: ${{ failure() && inputs.email_address }}
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: email-smtp.us-east-1.amazonaws.com
@@ -88,7 +98,7 @@ jobs:
           body: Upgrade python requirements workflow in ${{github.repository}} failed! For details see "github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
       - name: Send success notification
-        if: ${{ inputs.send_success_notification }}
+        if: ${{ inputs.send_success_notification && inputs.email_address }}
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: email-smtp.us-east-1.amazonaws.com
@@ -98,4 +108,4 @@ jobs:
           subject: Upgrade python requirements workflow executed successfully in ${{github.repository}}
           to: ${{ inputs.email_address }}
           from: github-actions <github-actions@edx.org>
-          body: Upgrade python requirements workflow executed in ${{github.repository}}. For details see "github.com/${{ github.repository }}/pulls"
+          body: Upgrade python requirements workflow executed in ${{ github.repository }}. For details see ${{ steps.createpullrequest.outputs.generated_pr }}
