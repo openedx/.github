@@ -36,5 +36,3 @@ jobs:
 
       - name: Run commitlint
         uses: wagoid/commitlint-github-action@v4
-        with:
-          helpURL: https://open-edx-proposals.readthedocs.io/en/latest/oep-0051-bp-conventional-commits.html
