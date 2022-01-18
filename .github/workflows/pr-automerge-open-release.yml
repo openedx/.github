@@ -8,7 +8,7 @@
 # - CC_TEAM_CHAMPIONS=org/team-name
 # - CC_TEAM_CONTRIBUTORS_ORG=org
 # - CC_TEAM_CONTRIBUTORS_TEAM=team-name
----
+
 name: Automerge BTR open-release PRs
 
 on:
@@ -21,39 +21,42 @@ jobs:
     if: ${{ (github.event.issue.pull_request && !github.event.issue.pull_request.draft) || (github.event.pull_request && !github.event.pull_request.draft) }}
     runs-on: ubuntu-latest
     steps:
-    - name: lookup teams
-      id: teams
-      uses: tspascoal/get-user-teams-membership@v1
-      with:
-        username: "${{ github.actor }}"
-        organization: ${{ secrets.CC_TEAM_CONTRIBUTORS_ORG }}
-        team: ${{ secrets.CC_TEAM_CONTRIBUTORS_TEAM }}
-        GITHUB_TOKEN: "${{ secrets.CC_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}"
-    - name: approve PR
-      if: ${{ steps.teams.outputs.isTeamMember == 'true' && (github.event.action == 'opened' || github.event.action == 'ready_for_review') }}
-      uses: andrewmusgrave/automatic-pull-request-review@0.0.5
-      with:
-        repo-token: ${{ secrets.CC_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
-        event: APPROVE
-        body: |
-          :+1:
+      - name: Lookup teams
+        id: teams
+        uses: tspascoal/get-user-teams-membership@v1
+        with:
+          username: "${{ github.actor }}"
+          organization: ${{ secrets.CC_TEAM_CONTRIBUTORS_ORG }}
+          team: ${{ secrets.CC_TEAM_CONTRIBUTORS_TEAM }}
+          GITHUB_TOKEN: "${{ secrets.CC_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}"
 
-          When you're ready to merge, add a comment that says
-          > @edx-community-bot merge
+      - name: Approve PR
+        if: ${{ steps.teams.outputs.isTeamMember == 'true' && (github.event.action == 'opened' || github.event.action == 'ready_for_review') }}
+        uses: andrewmusgrave/automatic-pull-request-review@0.0.5
+        with:
+          repo-token: ${{ secrets.CC_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+          event: APPROVE
+          body: |
+            :+1:
 
-          and we'll handle the rest!
-          CC: @${{ secrets.CC_TEAM_CHAMPIONS }} @${{ secrets.CC_TEAM_CONTRIBUTORS_ORG }}/${{ secrets.CC_TEAM_CONTRIBUTORS_TEAM }}
-    - name: label PR as auto-mergeable
-      if: ${{ steps.teams.outputs.isTeamMember == 'true' && contains(github.event.comment.body, '@edx-community-bot merge') }}
-      uses: andymckay/labeler@978f846c4ca6299fd136f465b42c5e87aca28cac
-      with:
-        add-labels: 'automerge'
-        repo-token: ${{ secrets.CC_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
-    - name: automerge
-      uses: "pascalgn/automerge-action@v0.13.1"
-      env:
-        GITHUB_TOKEN: "${{ secrets.CC_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}"
-        MERGE_COMMIT_MESSAGE: |
-          merge(#{pullRequest.number}): {pullRequest.title}
+            When you're ready to merge, add a comment that says
+            > @edx-community-bot merge
 
-          {pullRequest.body}
+            and we'll handle the rest!
+            CC: @${{ secrets.CC_TEAM_CHAMPIONS }} @${{ secrets.CC_TEAM_CONTRIBUTORS_ORG }}/${{ secrets.CC_TEAM_CONTRIBUTORS_TEAM }}
+
+      - name: Label PR as auto-mergeable
+        if: ${{ steps.teams.outputs.isTeamMember == 'true' && contains(github.event.comment.body, '@edx-community-bot merge') }}
+        uses: andymckay/labeler@978f846c4ca6299fd136f465b42c5e87aca28cac
+        with:
+          add-labels: 'automerge'
+          repo-token: ${{ secrets.CC_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Automerge
+        uses: "pascalgn/automerge-action@v0.13.1"
+        env:
+          GITHUB_TOKEN: "${{ secrets.CC_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}"
+          MERGE_COMMIT_MESSAGE: |
+            merge(#{pullRequest.number}): {pullRequest.title}
+
+            {pullRequest.body}
