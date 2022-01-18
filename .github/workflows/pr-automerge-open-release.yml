@@ -1,37 +1,48 @@
-# For non-draft changes to Named Release branches:
-# - Check if the user belongs to a maintainers team.
+# For non-draft changes to named release branches:
+# - Check if the user is a maintainer (listed below in the MERGERS env var).
 # - If so, approve the pull request.
-#   - Tag community-engineering (for now) and the maintainers team.
-#   - Merge the PR when the author comments `@edx-community-bot merge`.
+#   - Merge the PR when the author comments `@openedx-community-bot merge`.
+#
 # Required organization secrets
-# - CC_GITHUB_TOKEN=...
-# - CC_TEAM_CHAMPIONS=org/team-name
-# - CC_TEAM_CONTRIBUTORS_ORG=org
-# - CC_TEAM_CONTRIBUTORS_TEAM=team-name
+# - CC_GITHUB_TOKEN
 
 name: Automerge BTR open-release PRs
+
+env:
+  # The GitHub user names of people allowed to tell the bot to merge.
+  # From the "All release branches" entries on the wiki:
+  # https://openedx.atlassian.net/wiki/spaces/COMM/pages/3156344833/Current+Core+Contributors
+  MERGERS: arbrandes BbrSofiane cmltaWt0 regisb
 
 on:
   # This action is meant to be used from other actions.
   # https://docs.github.com/en/actions/learn-github-actions/reusing-workflows
   - workflow_call
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   automerge:
     if: ${{ (github.event.issue.pull_request && !github.event.issue.pull_request.draft) || (github.event.pull_request && !github.event.pull_request.draft) }}
     runs-on: ubuntu-latest
     steps:
-      - name: Lookup teams
-        id: teams
-        uses: tspascoal/get-user-teams-membership@v1
-        with:
-          username: "${{ github.actor }}"
-          organization: ${{ secrets.CC_TEAM_CONTRIBUTORS_ORG }}
-          team: ${{ secrets.CC_TEAM_CONTRIBUTORS_TEAM }}
-          GITHUB_TOKEN: "${{ secrets.CC_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}"
+      - name: Check merge rights
+        id: check
+        # This workflow used to use tspascoal/get-user-teams-membership,
+        # but it stopped working, and this works.
+        run: |
+          set -x
+          if echo $MERGERS | grep -q -w ${{ github.actor }}; then
+            permok=true
+          else
+            permok=false
+          fi
+          echo "PERMOK=$permok" >> $GITHUB_ENV
 
       - name: Approve PR
-        if: ${{ steps.teams.outputs.isTeamMember == 'true' && (github.event.action == 'opened' || github.event.action == 'ready_for_review') }}
+        if: ${{ env.PERMOK == 'true' && (github.event.action == 'opened' || github.event.action == 'ready_for_review') }}
         uses: andrewmusgrave/automatic-pull-request-review@0.0.5
         with:
           repo-token: ${{ secrets.CC_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
@@ -40,20 +51,20 @@ jobs:
             :+1:
 
             When you're ready to merge, add a comment that says
-            > @edx-community-bot merge
+            > @openedx-community-bot merge
 
             and we'll handle the rest!
-            CC: @${{ secrets.CC_TEAM_CHAMPIONS }} @${{ secrets.CC_TEAM_CONTRIBUTORS_ORG }}/${{ secrets.CC_TEAM_CONTRIBUTORS_TEAM }}
 
       - name: Label PR as auto-mergeable
-        if: ${{ steps.teams.outputs.isTeamMember == 'true' && contains(github.event.comment.body, '@edx-community-bot merge') }}
-        uses: andymckay/labeler@978f846c4ca6299fd136f465b42c5e87aca28cac
+        if: ${{ env.PERMOK == 'true' && contains(github.event.comment.body, '@openedx-community-bot merge') }}
+        uses: andymckay/labeler@1.0.4
         with:
           add-labels: 'automerge'
           repo-token: ${{ secrets.CC_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Automerge
-        uses: "pascalgn/automerge-action@v0.13.1"
+        if: ${{ env.PERMOK == 'true' }}
+        uses: "pascalgn/automerge-action@v0.14.3"
         env:
           GITHUB_TOKEN: "${{ secrets.CC_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}"
           MERGE_COMMIT_MESSAGE: |
