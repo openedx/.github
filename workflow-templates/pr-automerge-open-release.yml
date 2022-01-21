@@ -1,13 +1,11 @@
-# For non-draft changes to Named Release branches:
-# - Check if the user belongs to a maintainers team.
+# For non-draft changes to named release branches:
+# - Check if the user is a maintainer (listed in the MERGERS env var in the
+#     .github/workflows/pr-automerge-open-release.yml workflow).
 # - If so, approve the pull request.
-#   - Tag community-engineering (for now) and the maintainers team.
-#   - Merge the PR when the author comments `@edx-community-bot merge`.
+#   - Merge the PR when the author comments `@openedx-community-bot merge`.
+#
 # Required organization secrets
-# - CC_GITHUB_TOKEN=...
-# - CC_TEAM_CHAMPIONS=org/team-name
-# - CC_TEAM_CONTRIBUTORS_ORG=org
-# - CC_TEAM_CONTRIBUTORS_TEAM=team-name
+# - CC_GITHUB_TOKEN or GITHUB_TOKEN
 
 name: Automerge BTR open-release PRs
 

@@ -4,7 +4,7 @@
 #   - Merge the PR when the author comments `@openedx-community-bot merge`.
 #
 # Required organization secrets
-# - CC_GITHUB_TOKEN
+# - CC_GITHUB_TOKEN or GITHUB_TOKEN
 
 name: Automerge BTR open-release PRs
 
