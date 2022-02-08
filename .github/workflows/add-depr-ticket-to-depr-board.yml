@@ -1,0 +1,57 @@
+# This workflow runs when an issue is created. It checks if the issue
+# has the "DEPR" label, and if so, adds it to the DEPR board.
+# The "DEPR" label is auto-applied to all issues created using the
+# `depr-ticket` issue template.
+
+name: Add newly created DEPR issues to the DEPR project board
+on:
+  # This action is meant to be used from other actions.
+  # https://docs.github.com/en/actions/learn-github-actions/reusing-workflows
+  - workflow_call
+
+jobs:
+  track_pr:
+    runs-on: ubuntu-latest
+    steps:
+      # Generate a token from org-level GitHub App because projects (beta)
+      # are defined at the org level
+      - name: Generate token
+        if: contains(github.event.issue.labels.*.name, 'DEPR')
+        id: generate_token
+        uses: tibdex/github-app-token@36464acb844fc53b9b8b2401da68844f6b05ebb0
+        with:
+          app_id: ${{ secrets.GRAPHQL_AUTH_APP_ID }}
+          private_key: ${{ secrets.GRAPHQL_AUTH_APP_PEM }}
+
+      - name: Get DEPR project ID
+        if: contains(github.event.issue.labels.*.name, 'DEPR')
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          ORGANIZATION: openedx
+          PROJECT_NUMBER: 9
+        run: |
+          gh api graphql -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org){
+                projectNext(number: $number) {
+                  id
+                }
+              }
+            }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > project_data.json
+
+          echo 'PROJECT_ID='$(jq '.data.organization.projectNext.id' project_data.json) >> $GITHUB_ENV
+
+      - name: Add DEPR issue to project
+        if: contains(github.event.issue.labels.*.name, 'DEPR')
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          ISSUE_ID: ${{ github.event.issue.node_id }}
+        run: |
+          item_id="$( gh api graphql -f query='
+            mutation($project:ID!, $issue:ID!) {
+              addProjectNextItem(input: {projectId: $project, contentId: $issue}) {
+                projectNextItem {
+                  id
+                }
+              }
+            }' -f project=$PROJECT_ID -f issue=$ISSUE_ID --jq '.data.addProjectNextItem.projectNextItem.id')"
