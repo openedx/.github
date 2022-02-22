@@ -1,7 +1,15 @@
-# This workflow runs when an issue is created. It checks if the issue
-# has the "DEPR" label, and if so, adds it to the DEPR board.
-# The "DEPR" label is auto-applied to all issues created using the
-# `depr-ticket` issue template.
+# This workflow runs when an issue is created; it checks if the issue is either:
+# - labelled "DEPR"
+# - title starts with "[DEPR]"
+# - body starts with "Proposal Date" (this is the first template field)
+# If so, adds the DEPR label, adds it to the
+# DEPR board in the default column, and a message is posted to the
+# #depr-slash-n-burn slack channel
+
+# Note: The "DEPR" label is NOT auto-applied to all tickets created using the
+# `depr-ticket.yml` template, because only those with write access can add the
+# label. So additionally, the template inserts [DEPR] at the beginning. So, this
+# automation is shakily governed by hoping users do not remove that phrase.
 
 name: Add newly created DEPR issues to the DEPR project board
 on:
@@ -17,13 +25,26 @@ on:
         required: true
 
 jobs:
-  track_pr:
+  # First parse issue title and add label, if it doesn't have it already bc only
+  # repo members can add the label, even tho it's defined in the template >:(
+  add_label:
+    runs-on: ubuntu-latest
+    # This is defined on both jobs - so need to change x2 if changing this.
+    if: ${{ (contains(github.event.issue.title, '[DEPR]') || startsWith(github.event.issue.body, 'Proposal Date')) && !contains(github.event.issue.labels.*.name, 'DEPR') }}
+    steps:
+      - name: apply DEPR label
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: DEPR
+
+  # Add the ticket to the DEPR board and notify in Slack
+  add_and_notify:
     runs-on: ubuntu-latest
     steps:
+      if: ${{ contains(github.event.issue.title, '[DEPR]') || startsWith(github.event.issue.body, 'Proposal Date') || contains(github.event.issue.labels.*.name, 'DEPR') }}
       # Generate a token from org-level GitHub App because projects (beta)
       # are defined at the org level
       - name: Generate token
-        if: contains(github.event.issue.labels.*.name, 'DEPR')
         id: generate_token
         uses: tibdex/github-app-token@36464acb844fc53b9b8b2401da68844f6b05ebb0
         with:
@@ -31,7 +52,6 @@ jobs:
           private_key: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
 
       - name: Get DEPR project ID
-        if: contains(github.event.issue.labels.*.name, 'DEPR')
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: openedx
@@ -49,7 +69,6 @@ jobs:
           echo 'PROJECT_ID='$(jq '.data.organization.projectNext.id' project_data.json) >> $GITHUB_ENV
 
       - name: Add DEPR issue to project
-        if: contains(github.event.issue.labels.*.name, 'DEPR')
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ISSUE_ID: ${{ github.event.issue.node_id }}
@@ -64,7 +83,6 @@ jobs:
             }' -f project=$PROJECT_ID -f issue=$ISSUE_ID --jq '.data.addProjectNextItem.projectNextItem.id')"
 
       - name: Alert in Slack
-        if: contains(github.event.issue.labels.*.name, 'DEPR')
         id: slack
         uses: slackapi/slack-github-action@v1.18.0
         with:

@@ -7,6 +7,7 @@ body:
     attributes:
       value: |
         Refer to [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more detail on the deprecation and removal process. This ticket should only be used for proposing the removal of an Open edX technology.
+        Please leave [DEPR] in the title of your ticket!
   - type: input
     id: todays-date
     attributes:
