@@ -40,8 +40,8 @@ jobs:
   # Add the ticket to the DEPR board and notify in Slack
   add_and_notify:
     runs-on: ubuntu-latest
+    if: ${{ contains(github.event.issue.title, '[DEPR]') || startsWith(github.event.issue.body, 'Proposal Date') || contains(github.event.issue.labels.*.name, 'DEPR') }}
     steps:
-      if: ${{ contains(github.event.issue.title, '[DEPR]') || startsWith(github.event.issue.body, 'Proposal Date') || contains(github.event.issue.labels.*.name, 'DEPR') }}
       # Generate a token from org-level GitHub App because projects (beta)
       # are defined at the org level
       - name: Generate token
