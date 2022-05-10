@@ -1,0 +1,26 @@
+#check package-lock file version
+
+name: lockfileVersion check
+
+on:
+  - workflow_call
+
+jobs:
+  version-check:
+    runs-on:  ubuntu-20.04
+    outputs:
+      output1: ${{ steps.getversion.outputs.version }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Retrieve version
+      id: getversion
+      run: |
+        echo "::set-output name=version::$(cat package-lock.json | grep '\"lockfileVersion\": 2,')"
+
+    - name: check value
+      if: ${{ steps.getversion.outputs.version == null }}
+      run: |
+        echo "ERROR: Outdated package-lock file. Use NPM8 to install dependencies "
+        exit 1
