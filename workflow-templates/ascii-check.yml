@@ -1,6 +1,6 @@
 #verifies setup.cfg doesn't have any non-ascii characters
 
-name: ascii check
+name: ASCII check
 
 on:
   push:
