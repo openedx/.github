@@ -1,0 +1,7 @@
+{
+     "name": "ASCII check Workflow",
+     "description": "Verify setup.cfg doesn't have any non-ascii characters",
+     "iconName": "edx-workflow-template-icon",
+     "categories": [],
+     "filePatterns": []
+ }
