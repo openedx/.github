@@ -8,7 +8,7 @@
 # "label: really long lots of words label" will apply the
 # label "really long lots of words label"
 
-n-ame: Add newly created GitHub Request tickets to the tCRIL Engineering project board
+name: Allows for adding and removing labels via comment
 
 on:
   issue_comment:
