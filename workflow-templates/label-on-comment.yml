@@ -1,0 +1,10 @@
+name: Allows for the adding and removing of labels via comment
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  add_label:
+    uses: openedx/.github/.github/workflows/label-on-comment.yml@master
+
