@@ -1,0 +1,36 @@
+# This is a file to standardize editor settings: http://EditorConfig.org
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+indent_style = space
+indent_size = 4
+max_line_length = 120
+trim_trailing_whitespace = true
+
+[{Makefile, *.mk}]
+# Makefiles need tabs
+indent_style = tab
+indent_size = 8
+
+[*.{yml,yaml,json}]
+indent_size = 2
+
+[*.js]
+indent_size = 2
+
+[*.diff]
+# Git patches need whitespace in first column for empty lines.
+trim_trailing_whitespace = false
+
+[.git/*]
+# Don't fiddle with .git files at all.
+trim_trailing_whitespace = false
+
+[COMMIT_EDITMSG]
+max_line_length = 72
+
+[*.rst]
+max_line_length = 79
