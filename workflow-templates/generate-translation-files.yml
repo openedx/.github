@@ -1,0 +1,13 @@
+# Run generate-translation-files
+
+name: Generate Translation Files
+
+on:
+  push:
+    branches:
+    - master
+  workflow_dispatch: {}
+
+jobs:
+  python-translations:
+    uses: openedx/.github/.github/workflows/generate-translation-files.yml@master
