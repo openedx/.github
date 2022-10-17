@@ -48,7 +48,10 @@ jobs:
 
     steps:
       - name: setup target branch
-        run: echo "target_branch=$(if ['${{ inputs.branch }}' = '']; then echo 'master'; else echo '${{ inputs.branch }}'; fi)" >> $GITHUB_ENV
+        env:
+          BRANCH: ${{ inputs.branch }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: echo "target_branch=$(if ['$BRANCH' = '']; then echo '$DEFAULT_BRANCH'; else echo '$BRANCH'; fi)" >> $GITHUB_ENV
 
       - uses: actions/checkout@v2
         with:
@@ -74,14 +77,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.requirements_bot_github_token }}
           GITHUB_USER_EMAIL: ${{ secrets.requirements_bot_github_email }}
+          TARGET_BRANCH: ${{ env.target_branch }}
+          USER_REVIEWERS: ${{ inputs.user_reviewers }}
+          TEAM_REVIEWERS: ${{ inputs.team_reviewers }}
         run: |
           cd $GITHUB_WORKSPACE/testeng-ci
           python -m jenkins.pull_request_creator --repo-root=$GITHUB_WORKSPACE \
-          --target-branch="${{ env.target_branch }}" --base-branch-name="upgrade-python-requirements" \
+          --target-branch="$TARGET_BRANCH" --base-branch-name="upgrade-python-requirements" \
           --commit-message="chore: Updating Python Requirements" --pr-title="Python Requirements Update" \
           --pr-body="Python requirements update. Please review the [changelogs](https://openedx.atlassian.net/wiki/spaces/TE/pages/1001521320/Python+Package+Changelogs) for the upgraded packages." \
-          --user-reviewers="${{ inputs.user_reviewers }}" \
-          --team-reviewers="${{ inputs.team_reviewers }}" \
+          --user-reviewers="$USER_REVIEWERS" \
+          --team-reviewers="$TEAM_REVIEWERS" \
           --delete-old-pull-requests --output-pr-url-for-github-action
 
       - name: Send failure notification
