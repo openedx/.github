@@ -1,0 +1,7 @@
+{
+    "name": "Auto Update Browserslist Workflow",
+    "description": "Run weekly to create a PR that updates browserslist",
+    "iconName": "edx-workflow-template-icon",
+    "categories": [],
+    "filePatterns": []
+}
