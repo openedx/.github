@@ -43,5 +43,5 @@ jobs:
         cd $GITHUB_WORKSPACE/testeng-ci
         python -m jenkins.pull_request_creator --repo-root=$GITHUB_WORKSPACE \
         --target-branch="master" --base-branch-name="update-browserslist" \
-        --commit-message="chore: update browserslist" --pr-title="Update browserslist DB" \
+        --commit-message="chore: update browserslist body" --pr-title="Update browserslist DB" \
         --pr-body="Updated browserslist DB" --delete-old-pull-requests --output-pr-url-for-github-action
