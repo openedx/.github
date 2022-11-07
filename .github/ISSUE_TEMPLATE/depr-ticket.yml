@@ -19,25 +19,17 @@ body:
   - type: input
     id: accept-date
     attributes:
-      label: Ticket Acceptance Date
-      description: When is the target date for getting this proposal accepted?
-      placeholder: 29 February 2020
-    validations:
-      required: true
-  - type: input
-    id: remove-date
-    attributes:
-      label: Technology Removal Date
-      description: When is the target date for getting this technology removed?
+      label: Target Ticket Acceptance Date
+      description: When is the target date for getting this proposal reviewed and accepted? A good default is approximately 2 weeks from when the ticket is communicated (see [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html)).
       placeholder: 29 February 2020
     validations:
       required: true
   - type: input
     id: named-release-without
     attributes:
-      label: First Open edX Named Release Without This Functionality
-      description: Named releases are generally CUT in early April and early October. Based on the above removal date, what named release would be the first without this code? Please reach out to the Build Test Release working group (#wg-build-test-release in Slack) if you're not sure.
-      placeholder: Dogwood
+      label: Earliest Open edX Named Release Without This Functionality
+      description: What is the earliest named release without this code? Named releases are generally CUT in early April and early October. Use "Olive - 2022-10", or "Palm - 2023-04", or "Q - 2023-05" as examples. Please reach out to the Build Test Release working group (#wg-build-test-release in Slack) if you're not sure.
+      placeholder: Olive - 2022-10
     validations:
       required: true
   - type: textarea
