@@ -1,0 +1,25 @@
+name: Repo Health Workflow Call
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+    inputs:
+      ORG_NAMES: 
+        description: "Space separated list of organisation names to parse repos. i.e. 'openedx edx . . . ' "
+        type: string
+        default: "edx openedx"
+
+jobs:
+  call-repo-health-job-workflow:
+    uses: usamasadiq/openedx-github/.github/workflows/repo-health-job.yml@master
+    with:
+      ORG_NAMES: ${{ inputs.ORG_NAMES }}
+      REPORT_DATE: ""
+      ONLY_CHECK_THIS_REPOSITORY: ""
+      REPO_HEALTH_GOOGLE_CREDS_FILE: ""
+      REPO_HEALTH_REPOS_WORKSHEET_ID: 0
+      REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL: ""
+    secrets:
+      REPO_HEALTH_TOKEN: ${{ secrets.token }}
+      REPO_HEALTH_BOT_EMAIL: "repo_health_bot@edx.org"
