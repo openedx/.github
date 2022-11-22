@@ -50,7 +50,7 @@ jobs:
       - name: setup target branch
         env:
           BRANCH: ${{ inputs.branch }}
-          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          DEFAULT_BRANCH: ${{ github.event.inputs.default_branch }}
         run: echo "target_branch=$(if [ $BRANCH = '' ]; then echo $DEFAULT_BRANCH; else echo $BRANCH; fi)" >> $GITHUB_ENV
 
       - uses: actions/checkout@v2
