@@ -59,7 +59,7 @@ or
 ``acme/release-candidate-3729``
 
 
-Consquences
+Consequences
 ===========
 
 1. Continuous delivery systems and other automation should be updated
