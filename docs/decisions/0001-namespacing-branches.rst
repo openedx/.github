@@ -58,11 +58,15 @@ or
 
 ``acme/release-candidate-3729``
 
-In the case of the global namespace, tags and branches may still be further qualified to provide addition information and specificity.
+In the case of the global namespace, tags and branches may still be
+further qualified to provide additional information and specificity.
 
 For example:
 
-``release/palm`` would represent the branch for an officially sanctioned Open edX named release.
+``release`` would be consider in the global namespace.
+
+``release/palm`` would represent the branch for an officially
+sanctioned Open edX named release.
 
 
 Consequences
