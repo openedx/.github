@@ -11,27 +11,27 @@ Context
 
 This ADR was written in response to this `Discourse thread`_.
 
-Currently, 2U continuously delevery tooling creates branches and tags
+Currently, 2U continuous delevery tooling creates branches and tags
 in the repository "global namespace."  By that I mean that branches
 and tags have the form ``release`` or ``release-candidate-3729``.
 This is confusing because those branches and tags appear to be global,
-offically sanctioned by the project, and authoritative.
+officially sanctioned by the project, and authoritative.
 
 A result of this is that the official named releases of the platform
 require a namespace specifier, for example,
-``open-release/olive.master``
+``open-release/olive.master``.
 
 This is confusing to most members of the community and reflects the
 prior stewardship arrangements for the project.
 
-It's not typical of open-source project to allow partipating
-organizations to push branches and tags to the canonical upstream.
-However, we recommend not pohibiting that at this time.  There are two
-reasons for that:
+It is not typical of open-source projects to allow participating
+organizations to push organization specific branches and tags to the
+canonical upstream.  However, we recommend not prohibiting this at this
+time.  There are two reasons for that:
 
 1. This would require more substanial changes to partipant deployment
-   systems that would delay getting value from this change.
-2. The 2U branches and tags represent code that is battle tested in
+   systems that would delay getting value from this initial change.
+2. The 2U branches and tags represent code that is battle-tested in
    production at scale and are, thus, valuable sign posts for
    community members.
 
@@ -44,7 +44,7 @@ Decisions
 1. We will not forbid project participants with write access to
    repositories from pushing branches or tags to the canonical
    upstream hosted at the openedx GitHub organization
-2. We will require that project partipants namespace their branches
+2. We will require that project participants namespace their branches
    and tags to clarify their origin and purpose
 3. The global namespace will be reserved for global project purposes
 
