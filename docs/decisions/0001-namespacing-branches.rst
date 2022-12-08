@@ -1,13 +1,13 @@
 Namespacing Branches and Tags
------------------------------
+#############################
 
 Status
-======
+******
 
 Draft
 
 Context
-=======
+*******
 
 This ADR was written in response to this `Discourse thread`_.
 
@@ -39,7 +39,7 @@ time.  There are two reasons for that:
 
 
 Decisions
-=========
+*********
 
 1. We will not forbid project participants with write access to
    repositories from pushing branches or tags to the canonical
@@ -60,7 +60,7 @@ or
 
 
 Consequences
-===========
+************
 
 1. Continuous delivery systems and other automation should be updated
    across the ecosystem to use the proper naming convention for
