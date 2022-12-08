@@ -77,5 +77,8 @@ Consequences
    branches and tags
 2. Existing branches and tags should be updated to use the new naming
    protocol
-3. A reasonable grace period should be established to schedule and
+3. There will be no change to the guidance that personal branches
+   should be namespaced by GitHub username.  For example, the pull
+   request for this ADR originated in the branch ``e0d/namespace-adr``
+4. A reasonable grace period should be established to schedule and
    complete the required work
