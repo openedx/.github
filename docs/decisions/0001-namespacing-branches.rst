@@ -29,7 +29,7 @@ organizations to push organization specific branches and tags to the
 canonical upstream.  However, we recommend not prohibiting this at this
 time.  There are two reasons for that:
 
-1. This would require more substanial changes to partipant deployment
+1. This would require more substantial changes to participant deployment
    systems that would delay getting value from this initial change.
 2. The 2U branches and tags represent code that is battle-tested in
    production at scale and are, thus, valuable sign posts for
