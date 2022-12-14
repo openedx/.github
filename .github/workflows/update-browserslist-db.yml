@@ -32,8 +32,8 @@ jobs:
       uses: peter-evans/create-pull-request@v4
       with:
           token: ${{ secrets.requirements_bot_github_token }}
-          commit-message: 'chore: update browserslist'
+          commit-message: 'chore: update browserslist DB'
           title: Update browserslist DB
           body: |
             Updated browserslist DB
-          branch: update-browserslist
+          branch: update-browserslist-db

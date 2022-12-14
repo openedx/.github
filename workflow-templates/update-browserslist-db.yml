@@ -1,4 +1,4 @@
-# Run weekly to create a PR that updates browserslist
+# Run weekly to create a PR that updates browserslist DB
 
 name: Update Browserslist DB
 on:
