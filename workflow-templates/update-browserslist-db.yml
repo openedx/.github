@@ -1,0 +1,11 @@
+# Run weekly to create a PR that updates browserslist
+
+name: Update Browserslist DB
+on:
+  schedule:
+    - cron:  '0 0 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update-browserslist:
+    uses: openedx/.github/.github/workflows/update-browserslist-db.yml@master
