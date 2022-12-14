@@ -26,7 +26,7 @@ jobs:
       run: npm ci
 
     - name: Update dependencies
-      run: npx browserslist@latest --update-db
+      run: npx update-browserslist-db@latest
 
     - name: Create Pull Request
       id: cpr
