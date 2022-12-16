@@ -1,0 +1,48 @@
+name: Update Browserslist DB
+on:
+  - workflow_call
+
+jobs:
+  update-dep:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [16]
+        npm: [8.5.x]
+
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v2
+      
+    - name: Install node
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node }}
+    
+    - name: Install dependencies
+      run: npm install -g npm@${{ matrix.npm }}
+
+    - name: Install Packages 
+      run: npm ci
+
+    - name: Update dependencies
+      run: npx update-browserslist-db@latest
+
+    - name: Create Pull Request
+      id: cpr
+      uses: peter-evans/create-pull-request@v4
+      with:
+          token: ${{ secrets.requirements_bot_github_token }}
+          commit-message: 'chore: update browserslist DB'
+          title: Update browserslist DB
+          body: |
+            Updated browserslist DB
+          branch: update-browserslist-db
+
+    - name: Enable Pull Request Automerge
+      if: steps.cpr.outputs.pull-request-operation == 'created'
+      uses: peter-evans/enable-pull-request-automerge@v2
+      with:
+        token: ${{ secrets.requirements_bot_github_token }}
+        pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+        merge-method: squash
