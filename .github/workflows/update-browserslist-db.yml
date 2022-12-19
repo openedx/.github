@@ -1,6 +1,6 @@
 name: Update Browserslist DB
 on:
-  workflow_call
+  workflow_call:
     secrets:
       requirements_bot_github_token:
         required: true
