@@ -8,7 +8,6 @@ If you're trying to learn more, check out...
 * the homepage: [openedx.org](https://openedx.org),
 * the discussion forums: [discuss.edx.org](https://discuss.openedx.org/),
 * the main LMS and CMS application repository: [edx-platform](https://github.com/edx/edx-platform),
-* the official development tool: [devstack](https://github.com/edx/devstack), and
 * the official installation method (also a development tool!): [tutor](https://docs.tutor.overhang.io/).
 
 Although Open edX software is built by many developers across different organizations,
