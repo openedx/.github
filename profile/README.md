@@ -11,8 +11,8 @@ If you're trying to learn more, check out...
 * the official development tool: [devstack](https://github.com/edx/devstack), and
 * the official installation method (also a development tool!): [tutor](https://docs.tutor.overhang.io/).
 
-Although Open edX is built by many developers across different organizations,
+Although Open edX software is built by many developers across different organizations,
 the GitHub organization itself is administered by the Center for Reimagining Learning (tCRIL).
 If, as an Open edX contributor,
-you need GitHub setting changed or lack access that you believe you should have,
+you need a GitHub setting changed or lack access that you believe you should have,
 please [file a ticket with the tCRIL engineering team](https://github.com/openedx/tcril-engineering/issues/new/choose).
