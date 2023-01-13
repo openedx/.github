@@ -1,0 +1,17 @@
+# Run the workflow that adds newly created issues to a specific
+# GitHub Project
+
+name: Add newly created issues to the project board
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  Add an issue to board:
+    uses: openedx/.github/.github/workflows/add-issue-to-a-board.yml@master
+    secrets:
+      GITHUB_APP_ID: ${{ secrets.GRAPHQL_AUTH_APP_ID }}
+      GITHUB_APP_PRIVATE_KEY: ${{ secrets.GRAPHQL_AUTH_APP_PEM }}
+    with:
+      PROJECT_NUMBER: # required, it's the numeric part of a github project url.
