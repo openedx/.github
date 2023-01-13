@@ -64,7 +64,7 @@ jobs:
 
       - name: Automerge
         if: ${{ env.PERMOK == 'true' }}
-        uses: "pascalgn/automerge-action@v0.14.3"
+        uses: "pascalgn/automerge-action@v0.15.5"
         env:
           GITHUB_TOKEN: "${{ secrets.CC_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}"
           MERGE_COMMIT_MESSAGE: |
