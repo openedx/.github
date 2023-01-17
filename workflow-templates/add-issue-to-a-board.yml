@@ -1,17 +1,21 @@
 # Run the workflow that adds newly created issues to a specific
-# GitHub Project
+# GitHub Project.
+# This workflow could potentially be replaced if/when GitHub adds native
+# support for it: https://github.com/github/roadmap/issues/576
 
-name: Add newly created issues to the project board
+name: Add newly created issues to the project
 
 on:
   issues:
     types: [opened]
 
 jobs:
-  Add an issue to board:
-    uses: openedx/.github/.github/workflows/add-issue-to-a-board.yml@master
+  Add an issue to project:
+    uses: openedx/.github/.github/workflows/add-issue-to-a-project.yml@master
     secrets:
       GITHUB_APP_ID: ${{ secrets.GRAPHQL_AUTH_APP_ID }}
       GITHUB_APP_PRIVATE_KEY: ${{ secrets.GRAPHQL_AUTH_APP_PEM }}
     with:
-      PROJECT_NUMBER: # required, it's the numeric part of a github project url.
+      # required, it's the numeric part of a github project url
+      # for example, https://github.com/orgs/openedx/projects/4 has PROJECT_NUMBER: 4
+      PROJECT_NUMBER: undefined

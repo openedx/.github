@@ -23,7 +23,7 @@ jobs:
   add_to_project:
     runs-on: ubuntu-latest
     steps:
-      # Generate a token from org-level GitHub App because projects (beta)
+      # Generate a token from org-level GitHub App because non-classic projects
       # are defined at the org level
       - name: Generate token
         id: generate_token
