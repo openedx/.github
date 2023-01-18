@@ -10,7 +10,7 @@ on:
     types: [opened]
 
 jobs:
-  Add an issue to project:
+  Add_an_issue_to_project:
     uses: openedx/.github/.github/workflows/add-issue-to-a-project.yml@master
     secrets:
       GITHUB_APP_ID: ${{ secrets.GRAPHQL_AUTH_APP_ID }}
