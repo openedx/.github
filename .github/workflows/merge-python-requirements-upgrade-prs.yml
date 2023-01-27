@@ -2,9 +2,9 @@ name: Merge Python Requirements Upgrade PRs
 
 on:
   schedule:
-    # will run the job at 7 AM every day (UTC),
-    # https://crontab.guru/#0_7_*_*_*
-    - cron: "0 7 * * *"
+    # will run the job at 10 AM every day (UTC),
+    # https://crontab.guru/#0_10_*_*_*
+    - cron: "0 10 * * *"
 
 jobs:
   get_list_of_prs:
