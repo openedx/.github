@@ -5,6 +5,7 @@ on:
     # will run the job at 10 AM every day (UTC),
     # https://crontab.guru/#0_10_*_*_*
     - cron: "0 10 * * *"
+  workflow_dispatch:
 
 jobs:
   get_list_of_prs:
@@ -80,11 +81,11 @@ jobs:
         env:
           GIT_TOKEN: ${{ secrets.requirements_bot_github_token }}
         run: |
-          check_pr_tests_status.py --org "$org_name" --repo "$repo_name" --pr_number "$pr_number" \
-          --exclude-contexts 'Renovate|[Cc]odecov|Dependabot|edx-platform-ci' --all-checks
+          check_pr_tests_status.py --org "${{ env.org_name }}" --repo "${{ env.repo_name }}" --pr_number \
+          "${{ env.pr_number }}" --exclude-contexts 'Renovate|[Cc]odecov|Dependabot|edx-platform-ci' --all-checks
 
       - name: Merge pull request
         env:
           GIT_TOKEN: ${{ secrets.requirements_bot_github_token }}
         run: |
-          merge_pull_request --org "${{ env.org_name }}" --repo "${{ env.repo_name }}" --pr_number
+          merge_pr.py --org "${{ env.org_name }}" --repo "${{ env.repo_name }}" --pr_number "${{ env.pr_number }}"
