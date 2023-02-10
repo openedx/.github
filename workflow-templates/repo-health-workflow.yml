@@ -9,16 +9,22 @@ on:
         description: "Space separated list of organisation names to parse repos. i.e. 'openedx edx . . . ' "
         type: string
         default: "edx openedx"
+      REPOS_TO_IGNORE: 
+        description: "Space separated list of organisation names to parse repos. i.e. 'repo1 repo2 . . . ' "
+        type: string
+        default: ""
 
 jobs:
   call-repo-health-job-workflow:
     uses: usamasadiq/openedx-github/.github/workflows/repo-health-job.yml@master
     with:
-      ORG_NAMES: ${{ inputs.ORG_NAMES }}
       REPORT_DATE: ""
+      REPOS_TO_IGNORE: ""
       ONLY_CHECK_THIS_REPOSITORY: ""
+      TARGET_REPO_TO_STORE_REPORTS: ""
       REPO_HEALTH_GOOGLE_CREDS_FILE: ""
       REPO_HEALTH_REPOS_WORKSHEET_ID: 0
+      ORG_NAMES: ${{ inputs.ORG_NAMES }}
       REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL: ""
     secrets:
       REPO_HEALTH_TOKEN: ${{ secrets.token }}

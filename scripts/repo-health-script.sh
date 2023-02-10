@@ -19,7 +19,7 @@ pip install -q -e repo_tools
 cd $WORKSPACE
 touch "repositories.txt"
 for ORG_NAME in ${ORG_NAMES[@]}; do
-  get_org_repo_urls "${ORG_NAME}" --url_type https --forks --add_archived --output_file "repositories.txt" --username "${GITHUB_USER_EMAIL}" --token "${GITHUB_TOKEN}" --ignore-repo "clamps-ghsa-c4rq-qwgr-pj5h"
+  get_org_repo_urls "${ORG_NAME}" --url_type https --forks --add_archived --output_file "repositories.txt" --username "${GITHUB_USER_EMAIL}" --token "${GITHUB_TOKEN}" --ignore-repo "${REPOS_TO_IGNORE}"
 done
 
 ############################
@@ -54,7 +54,7 @@ do
   fi
 
   if [[ "${REPO_NAME}" = "edx-repo-health" ]]; then
-      echo "Skipping <${line}>: edx-repo health"
+      echo "Skipping <${line}>: edx-repo-health"
       continue
   fi
 
@@ -94,22 +94,21 @@ do
   mkdir -p "$ORG_DATA_DIR"
 
   OUTPUT_FILE_NAME=${REPO_NAME}${OUTPUT_FILE_POSTFIX}
-  if pytest --repo-health --repo-health-path ${WORKSPACE}/edx-repo-health --repo-path ${WORKSPACE}/target-repo --repo-health-metadata "${METADATA_FILE_DIST}" --output-path "${ORG_DATA_DIR}/${OUTPUT_FILE_NAME}" -o log_cli=true --exitfirst --noconftest -v -c /dev/null
+  REPO_HEALTH_COMMAND=$(pytest --repo-health \
+  --repo-health-path ${WORKSPACE}/edx-repo-health \
+  --repo-path ${WORKSPACE}/target-repo \
+  --repo-health-metadata "${METADATA_FILE_DIST}" \
+  --output-path "${ORG_DATA_DIR}/${OUTPUT_FILE_NAME}" \
+  -o log_cli=true --exitfirst --noconftest -v -c /dev/null )
+  if ${REPO_HEALTH_COMMAND}
   then
       true
-  elif pytest --repo-health --repo-health-path ${WORKSPACE}/edx-repo-health --repo-path ${WORKSPACE}/target-repo --repo-health-metadata "${METADATA_FILE_DIST}" --output-path "${ORG_DATA_DIR}/${OUTPUT_FILE_NAME}" -o log_cli=true --exitfirst --noconftest -v -c /dev/null
+  elif ${REPO_HEALTH_COMMAND}
   # rerun the same command if it fails once
   then
       true
   else
       failed_repos+=("$FULL_NAME") && continue
-  fi
-  
-  # This counter will be removed after completing the testing of the script.
-  COUNTER=$((COUNTER+1))
-  echo "COUNTER : ${COUNTER}"
-  if [[ COUNTER -eq 5 ]]; then
-    break
   fi
 
 done < "$input"
@@ -152,15 +151,13 @@ then
      done
   fi
 
-  # For now, the changes are being pushed to a test branch. 
-  # Default master branch will be selected after the testing gets completed.
-  git checkout -b bom-test
+  git checkout master
   git add --all
   git status
   git config --global user.name "Repo Health BOT"
   git config --global user.email ${GITHUB_USER_EMAIL}
   git diff-index --quiet HEAD || git commit -m ${commit_message}
-  git push origin bom-test
+  git push origin master
 
 fi
 
