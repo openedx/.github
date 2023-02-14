@@ -1,3 +1,9 @@
+# This file contains a workflow which will be run on schedule every day, and
+# will collect all the eligible (PRs which are labelled "Ready to merge" by our 
+# script) python upgrade PRs from both edx and openedx orgs.
+# After fetching all PRs, it will check if all the checks passing on the PR, if yes
+# then it will merge that PR, otherwise it will fail.
+
 name: Merge Python Requirements Upgrade PRs
 
 on:
