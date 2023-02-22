@@ -109,6 +109,5 @@ jobs:
           REPO_HEALTH_REPOS_WORKSHEET_ID: ${{ inputs.REPO_HEALTH_REPOS_WORKSHEET_ID }}
           REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL: ${{ inputs.REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL }}
         run: |
-          curl -o $PWD/repo-health-script.sh https://raw.githubusercontent.com/UsamaSadiq/openedx-github/update-repo-health-job/scripts/repo-health-script.sh
-          chmod +x $PWD/repo-health-script.sh
-          bash $PWD/repo-health-script.sh
+          chmod +x edx-repo-health/scripts/repo-health-script.sh
+          bash edx-repo-health/scripts/repo-health-script.sh
