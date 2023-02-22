@@ -51,14 +51,14 @@ jobs:
         env:
           BRANCH: ${{ inputs.branch }}
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-        run: echo "target_branch=$(if [ $BRANCH = '' ]; then echo $DEFAULT_BRANCH; else echo $BRANCH; fi)" >> $GITHUB_ENV
+        run: echo "target_branch=${BRANCH:-${DEFAULT_BRANCH}}" >> $GITHUB_ENV
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ env.target_branch }}
 
       - name: setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 

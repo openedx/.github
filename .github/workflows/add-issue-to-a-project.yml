@@ -1,0 +1,41 @@
+# This workflow can be called to add a given issue to a github org-level Project
+
+name: Add New Items to Project
+
+on:
+  # This action is meant to be used from other actions.
+  # https://docs.github.com/en/actions/learn-github-actions/reusing-workflows
+  workflow_call:
+    secrets:
+      GITHUB_APP_ID:
+        required: true
+      GITHUB_APP_PRIVATE_KEY:
+        required: true
+    inputs:
+      ORGANIZATION:
+        type: "string"
+        default: "openedx"
+      PROJECT_NUMBER:
+        type: "number"
+        required: true
+
+jobs:
+  # Add the ticket to a board
+  add_to_project:
+    name: "Add new item to project"
+    runs-on: ubuntu-latest
+    steps:
+      # Generate a token from org-level GitHub App because non-classic projects
+      # are defined at the org level
+      - name: "Generate token"
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.GITHUB_APP_ID }}
+          private_key: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
+
+      - name: "Add to project"
+        uses: actions/add-to-project@v0.4.0
+        with:
+          project-url: https://github.com/orgs/${{ inputs.ORGANIZATION }}/projects/${{ inputs.PROJECT_NUMBER }}
+          github-token: ${{ steps.generate_token.outputs.token }}
