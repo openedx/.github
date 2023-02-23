@@ -8,64 +8,13 @@
 # "label: really long lots of words label" will apply the
 # label "really long lots of words label"
 
-name: Allows for adding and removing labels via comment
+name: Allows for the adding and removing of labels via comment
 
 on:
-  # This action is meant to be used from other actions.
-  # https://docs.github.com/en/actions/learn-github-actions/reusing-workflows
-  - workflow_call
+  issue_comment:
+    types: [created]
 
 jobs:
-  add_label:
-    runs-on: ubuntu-latest
+  add_remove_labels:
+    uses: openedx/.github/.github/workflows/add-remove-label-on-comment.yml@master
 
-    if: ${{ startsWith(github.event.comment.body, 'label:') }}
-
-    steps:
-      - name: parse_label
-        env:
-          BODY: ${{ github.event.comment.body }}
-        run: |
-          # parse and put in env
-          LABEL=${BODY:7}
-          echo "Found label: "$LABEL
-          echo 'LABEL='$LABEL >> $GITHUB_ENV
-
-      - name: apply label
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          labels: ${{ env.LABEL }}
-
-      - name: Comment on failure
-        if: ${{ failure() }}
-        env:
-          URL: ${{ github.event.issue.comments_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          COMMENT="Failed to add label: "$LABEL
-          curl \
-            -X POST \
-            $URL \
-            -H "Content-Type: application/json" \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            --data '{ "body": $COMMENT }'
-
-  remove_label:
-    runs-on: ubuntu-latest
-
-    if: ${{ startsWith(github.event.comment.body, 'remove label:') }}
-
-    steps:
-      - name: parse_label
-        env:
-          BODY: ${{ github.event.comment.body }}
-        run: |
-          # parse and put in env
-          LABEL=${BODY:14}
-          echo "Found label: "$LABEL
-          echo 'LABEL='$LABEL >> $GITHUB_ENV
-
-      - name: remove label
-        uses: actions-ecosystem/action-remove-labels@v1
-        with:
-          labels: ${{ env.LABEL }}
