@@ -4,18 +4,9 @@
 
 name: Assign comment author to ticket if they say "assign me"
 on:
-  # This action is meant to be used from other actions.
-  # https://docs.github.com/en/actions/learn-github-actions/reusing-workflows
-  - workflow_call
-# Intended call:
-#  issue_comment:
-#    types: [created]
+  issue_comment:
+    types: [created]
+
 jobs:
-  add_assignee:
-    runs-on: ubuntu-latest
-    if: ${{ startsWith(github.event.comment.body, 'assign me') }}
-    steps:
-      - uses: actions-ecosystem/action-add-assignees@v1
-        with:
-          github_token: ${{ secrets.github_token }}
-          assignees: ${{ github.triggering_actor }}
+  self_assign_by_comment:
+    uses: openedx/.github/.github/workflows/self-assign-issue.yml@master
