@@ -1,92 +1,19 @@
-# This workflow runs when an issue is created; it checks if the issue is either:
+# Run the workflow that adds new tickets that are either:
 # - labelled "DEPR"
 # - title starts with "[DEPR]"
 # - body starts with "Proposal Date" (this is the first template field)
-# If so, adds the DEPR label, adds it to the
-# DEPR board in the default column, and a message is posted to the
-# #depr-slash-n-burn slack channel
-
-# Note: The "DEPR" label is NOT auto-applied to all tickets created using the
-# `depr-ticket.yml` template, because only those with write access can add the
-# label. So additionally, the template inserts [DEPR] at the beginning. So, this
-# automation is shakily governed by hoping users do not remove that phrase.
+# to the org-wide DEPR project board
 
 name: Add newly created DEPR issues to the DEPR project board
+
 on:
-  # This action is meant to be used from other actions.
-  # https://docs.github.com/en/actions/learn-github-actions/reusing-workflows
-  workflow_call:
-    secrets:
-      GITHUB_APP_ID:
-        required: true
-      GITHUB_APP_PRIVATE_KEY:
-        required: true
-      SLACK_BOT_TOKEN:
-        required: true
+  issues:
+    types: [opened]
 
 jobs:
-  # First parse issue title and add label, if it doesn't have it already bc only
-  # repo members can add the label, even tho it's defined in the template >:(
-  add_label:
-    runs-on: ubuntu-latest
-    # This is defined on both jobs - so need to change x2 if changing this.
-    if: ${{ (contains(github.event.issue.title, '[DEPR]') || startsWith(github.event.issue.body, 'Proposal Date')) && !contains(github.event.issue.labels.*.name, 'DEPR') }}
-    steps:
-      - name: apply DEPR label
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          labels: DEPR
-
-  # Add the ticket to the DEPR board and notify in Slack
-  add_and_notify:
-    runs-on: ubuntu-latest
-    if: ${{ contains(github.event.issue.title, '[DEPR]') || startsWith(github.event.issue.body, 'Proposal Date') || contains(github.event.issue.labels.*.name, 'DEPR') }}
-    steps:
-      # Generate a token from org-level GitHub App because projects (beta)
-      # are defined at the org level
-      - name: Generate token
-        id: generate_token
-        uses: tibdex/github-app-token@v1
-        with:
-          app_id: ${{ secrets.GITHUB_APP_ID }}
-          private_key: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
-
-      - name: Get DEPR project ID
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-          ORGANIZATION: openedx
-          PROJECT_NUMBER: 9
-        run: |
-          gh api graphql -f query='
-            query($org: String!, $number: Int!) {
-              organization(login: $org){
-                projectV2(number: $number) {
-                  id
-                }
-              }
-            }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > project_data.json
-
-          echo 'PROJECT_ID='$(jq '.data.organization.projectV2.id' project_data.json) >> $GITHUB_ENV
-
-      - name: Add DEPR issue to project
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-          ISSUE_ID: ${{ github.event.issue.node_id }}
-        run: |
-          item_id="$( gh api graphql -f query='
-            mutation($project:ID!, $issue:ID!) {
-              addProjectV2ItemById(input: {projectId: $project, contentId: $issue}) {
-                item {
-                  id
-                }
-              }
-            }' -f project=$PROJECT_ID -f issue=$ISSUE_ID --jq '.data.addProjectV2ItemById.item.id')"
-
-      - name: Alert in Slack
-        id: slack
-        uses: slackapi/slack-github-action@v1.23.0
-        with:
-          channel-id: CGB0S3L12
-          slack-message: "Incoming DEPR ticket: ${{ github.event.issue.title }}\nAuthor: ${{ github.event.issue.user.login }}\nURL: ${{ github.event.issue.html_url }}"
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+  routeissue:
+    uses: openedx/.github/.github/workflows/add-depr-ticket-to-depr-board.yml@master
+    secrets:
+      GITHUB_APP_ID: ${{ secrets.GRAPHQL_AUTH_APP_ID }}
+      GITHUB_APP_PRIVATE_KEY: ${{ secrets.GRAPHQL_AUTH_APP_PEM }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_ISSUE_BOT_TOKEN }}
