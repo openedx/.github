@@ -68,7 +68,7 @@ Rejected Alternatives
 
 * **Alternative linting tools:** We did not find any ShellCheck-like tools with comparable documtation, popularity, or ubiquity.
 
-* **ShellCheck in the Python cookiecutters:** We could add the ShellCheck workflow to edx-cookiecutters so that it is run on PRs for all new repositories. However, most new repositories will not need shell scripts, so we do not plan doing this.
+* **ShellCheck in the Python cookiecutters:** We could add the ShellCheck workflow to edx-cookiecutters so that it is run on PRs for all new repositories. However, most new repositories will not need shell scripts, so we do not plan on doing this.
 
 
 Potential Future Work
