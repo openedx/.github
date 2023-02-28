@@ -66,7 +66,7 @@ Rejected Alternatives
 
 * **Retroactive application:** We do not plan to retroactively apply ShellCheck to every repository with shell scripts. This would require resolving or applying amnesty to all existing violations, which does not seems worthwhile at this time.
 
-* **Alternative linting tools:** We did not find any ShellCheck-like tools with comparable documtation, popularity, or ubiquity.
+* **Alternative linting tools:** We did not find any ShellCheck-like tools with comparable documentation, popularity, or ubiquity.
 
 * **ShellCheck in the Python cookiecutters:** We could add the ShellCheck workflow to edx-cookiecutters so that it is run on PRs for all new repositories. However, most new repositories will not need shell scripts, so we do not plan on doing this.
 
