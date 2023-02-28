@@ -50,7 +50,7 @@ Consequences
 
 * A configurable ShellCheck workflow template will be added to this repository. This will let developers add ShellChecking to their repository's PRs with a couple clicks.
 
-  * In order to ensure deterministic builds, the template will pin ShellCheck to a specific version (v0.9.0 at time of writing). The maintainer of this repository will strive to update the template's version pin over time. Maintainers of repositories using ShellCheck may stick with the default provided in this repo or can override to a different version.  Those that override it  will be encouraged to update their pin over time. We expect that not all maintainers will do this, leading to lag & drift between versions; we expect that this will be OK, given that Bash itself is essentially feature-complete, so any newly-introcuded ShellCheck warnings are not expected to be critical.
+  * In order to ensure deterministic builds, the template will pin ShellCheck to a specific version (v0.9.0 at time of writing). The maintainer of this repository will strive to update the template's version pin over time. Maintainers of repositories using ShellCheck may stick with the default provided in this repo or can override to a different version.  Those that override it  will be encouraged to update their pin over time. We expect that not all maintainers will do this, leading to lag & drift between versions; we expect that this will be OK, given that Bash itself is essentially feature-complete, so any newly-introduced ShellCheck warnings are not expected to be critical.
 
 * The new template and this ADR will be announced on the forums and Slack.
 
