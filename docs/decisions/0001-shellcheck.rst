@@ -58,7 +58,7 @@ Consequences
 
 * The new ShellCheck template will be used to add checking to edx-platform PRs and master. Existing violations will be resolved or granted amnesty (that is: disabled with a cautionary comment).
 
-* We will share this ADR with the Maintainership Pilot team, which has been compiling a tenative list of repository standards, so that they may consider ShellCheck as a standard check for applicable repositories.
+* We will share this ADR with the Maintainership Pilot team, which has been compiling a tentative list of repository standards, so that they may consider ShellCheck as a standard check for applicable repositories.
 
 
 Rejected Alternatives
