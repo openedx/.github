@@ -1,8 +1,7 @@
-# Run ShellCheck on PRs and $default-branch.
+# Run ShellCheck on PRs and $default-branch
 
 # For more context, see:
 # https://github.com/openedx/.github/blob/master/docs/decisions/0001-shellcheck.rst
-
 
 name: ShellCheck
 
@@ -12,13 +11,30 @@ on:
     branches:
     - $default-branch
 
+permissions:
+  contents: read
+
 jobs:
   shellcheck:
-    # Call out to our predefined ShellCheck workflow.
-    uses: openedx/.github/.github/workflows/shellcheck.yml@master
-    env:
-      # The following environment variables can be used to configure
-      # the shared ShellCheck workflow:
-      #SHELLCHECK_VERSION: "v0.9.0"
-      #SHELLCHECK_ROOT_DIRS: "./scripts ./.github"
-      #SHELLCHECK_OPTIONS: ""
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Check out this repository
+      uses: actions/checkout@v3
+
+    - name: Check out shared actions
+      uses: actions/checkout@v3
+      with:
+        repository: openedx/.github
+        path: ./openedx-dot-github
+
+    - name: Run ShellCheck!
+      uses: ./openedx-dot-github/.github/actions/shellcheck
+      with:
+
+        # Required arguments for the ShellCheck action:
+        root-dirs: "./scripts ./.github"
+
+        # Optional arguments:
+        #shellcheck-version: "v0.9.0"
+        #shellcheck-options: ""

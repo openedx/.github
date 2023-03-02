@@ -1,0 +1,61 @@
+# This is a reusable action for running ShellCheck,
+# a linter for shell scripts (https://shellcheck.net).
+
+# For more context, see:
+# https://github.com/openedx/.github/blob/master/docs/decisions/0001-shellcheck.rst
+
+name: ShellCheck
+
+inputs:
+
+  root-dirs:
+    description: "Directories to search for .sh files, space-separated."
+    reqired: true
+
+  # We pin a reasonable default version here and will update it over time.
+  # However, repositories that are particuarly concerned about
+  # build stability should specify an override shellcheck-version
+  # and manage updates themselves.
+  shellcheck-version:
+    description: "ShellCheck version to install.Must be a tag or branch of https://github.com/koalaman/shellcheck."
+    required: false
+    default: "v0.9.0"
+
+  shellcheck-options:
+    description: "Command-line options to pass through to shellcheck."
+    required: false
+    default: ""
+
+runs:
+
+    using: composite 
+
+    # Note: Unfortunately, GitHub will not print the names of steps in
+    # composite actions, so we must rely on comments and echo'ing to
+    # make it clear to the user what's going on on.
+    steps:
+
+    - shell: bash
+      run: |
+        # Download, unpack & install ShellCheck ${{ inputs.shellcheck-version }}.
+        wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${{ inputs.shellcheck-version }}/shellcheck-${{ inputs.shellcheck-version}}.linux.x86_64.tar.xz" | tar -xJ
+        sudo cp "shellcheck-${{ inputs.shellcheck-version }}/shellcheck" /usr/bin
+        echo "Successfully installed:"
+        shellcheck -V
+        echo
+
+    - shell: bash
+      run: |
+        # Ensure that at least one shell script will be checked
+        if [[ -z "$(find ${{ inputs.root-dirs }} -name '*.sh')" ]] ; then
+          echo "::error::Error: No .sh files found within any of the root-dirs: ${{ inputs.root-dirs }}" && exit 1
+        fi 
+        echo "The following shell scripts will be checked:"
+        find ${{ inputs.root-dirs }} -name '*.sh'
+        echo
+
+    # This step is intentionally a big one-line command so that
+    # devs can easily copy it and run it on their own machine.
+    - shell: bash
+      run: find ${{ inputs.root-dirs }} -name '*.sh' -print0 | xargs -0 shellcheck ${{ inputs.shellcheck-options }}
+
