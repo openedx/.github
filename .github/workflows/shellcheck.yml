@@ -1,0 +1,61 @@
+# This is a reusable workflow for running ShellCheck,
+# a linter for shell scripts (https://shellcheck.net).
+
+# For more context, see:
+# https://github.com/openedx/.github/blob/master/docs/decisions/0001-shellcheck.rst
+
+name: ShellCheck
+
+on:
+  - workflow_call
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+# Repositories can provide overrides to these environment variables.
+env:
+
+  # ShellCheck version to install.
+  # Must be a tag or branch of https://github.com/koalaman/shellcheck.
+  # We pin a reasonable version here and will update it over time.
+  # However, repositories that are particuarly concerned about
+  # build stability should specify an override SHELLCHECK_VERSION
+  # and manage updates themselves.
+  SHELLCHECK_VERSION: "v0.9.0"
+
+  # List of directories to check for .sh files, space-separated.
+  SHELLCHECK_ROOT_DIRS: "./scripts ./.github"
+
+  # Options to pass to the shellcheck command.
+  SHELLCHECK_OPTIONS: ""
+
+jobs:
+
+  shellcheck:
+    name: Run ShellCheck
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Download & unpack ShellCheck
+      run: wget -qO- "https://github.com/koalaman/shellcheck/releases/download/$SHELLCHECK_VERSION/shellcheck-$SHELLCHECK_VERSION.linux.x86_64.tar.xz" | tar -xJv
+
+    - name: Install ShellCheck
+      run: sudo cp "shellcheck-$SHELLCHECK_VERSION/shellcheck" /usr/bin
+
+    - name: Show ShellCheck version
+      run: shellcheck -V
+
+    - name: Check out repository branch
+      uses: actions/checkout@v3
+
+    - name: Show shell scripts that will be checked
+      run: find $SHELLCHECK_ROOT_DIRS -name '*.sh'
+
+    - name: Check shell scripts
+      run: find $SHELLCHECK_ROOT_DIRS -name '*.sh' -print0 | xargs -0 shellcheck $SHELLCHECK_OPTIONS
+
