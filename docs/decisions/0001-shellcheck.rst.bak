@@ -18,7 +18,7 @@ Context
 Background
 ==========
 
-Although Python is the preferred language for backend development in the Open edX ecosystem, there are a few circumstances in which shell scripting (generally: Bash) is a superior tool. In particular, developers may reach for shell scripting languages when one or more of the following is true:
+Although Python is the preferred language for backend development in the Open edX ecosytem, there are a few circumstances in which shell scripting (generally: Bash) is a superior tool. In particular, developers may reach for shell scripting languages when one or more of the following is true:
 
 * A consistent Python environment is not guaranteed.
 * Requiring a Python environment would make the surrounding process (a build, a deployment pipeline, etc) less efficient.
@@ -26,7 +26,7 @@ Although Python is the preferred language for backend development in the Open ed
 
 In spite of these benefits, `shell scripting is notoriously fraught with pitfalls <https://mywiki.wooledge.org/BashPitfalls>`_, and many Open edX developers will have less experience writing shell scripts than they do writing Python or JavaScript. So, it is understood that shell script usage should be limited to specific scenarios.
 
-In almost all repositories, Open edX Python code is checked for common mistakes using pylint. Many repositories go further and use static analysis tools such as pycodestyle, pydocstyle, mypy, black, and isort. In contrast, even in spite of the known difficulty of correct shell scripting, Open edX shell scripts are *not* currently checked with any static analysis tools. Therefore, as shell scripts continue to be used in new Open edX contexts like `translations tooling <https://github.com/openedx/openedx-atlas>`_ and `static asset tooling <https://github.com/openedx/edx-platform/pull/31790>`_, we would like to identify a verification tool and encourage Open edX developers to use it.
+In almost all repositories, Open edX Python code is checked for common mistakes using pylint. Many repositories go further and use static analysis tools such as pycodestyle, pydocstyle, mypy, black, and isort. In constrast, even in spite of the known difficulty of correct shell scripting, Open edX shell scripts are *not* currently checked with any static analysis tools. Therefore, as shell scripts continue to be used in new Open edX contexts like `translations tooling <https://github.com/openedx/openedx-atlas>`_ and `static asset tooling <https://github.com/openedx/edx-platform/pull/31790>`_, we would like to identify a verification tool and encourage Open edX developers to use it.
 
 ShellCheck
 ==========
