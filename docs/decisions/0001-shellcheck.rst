@@ -2,14 +2,15 @@
 Adopt ShellCheck for shell script linting
 #########################################
 
-Background
-**********
+Status
+******
 
 **Accepted**
 
-Follow-up issues/PRs:
+Initial implementation PRs:
 
-* `Add ShellCheck to edx-platform <https://github.com/openedx/edx-platform/pull/31809>`_
+* https://github.com/openedx/.github/pull/64
+* https://github.com/openedx/edx-platform/pull/31809
 
 Context
 *******
