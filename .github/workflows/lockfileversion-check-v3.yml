@@ -1,5 +1,9 @@
 #check package-lock file version
 
+# With move to Node.js v18 and NPM 9, the resulting lockfileVersion is updated to 3.
+# This is a workflow to verify the use of NPM 9 and lockfileVersion 3
+# and intends to phase out the older workflow checking for lockfileVersion 2.
+
 name: lockfileVersion check v3
 
 on:
