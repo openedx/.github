@@ -10,13 +10,16 @@ on:
   workflow_call:
     inputs:
 
-      root-dirs:
+      exclude-patterns:
         type: string
-        required: true
+        required: false
+        default: ""
         description: |
-          Directories to search for .sh files, space-separated, each relative
-          to the root of the repository. Directories containing spaces or other
-          Bash delimiters must be wrapped in single quotes.
+          File paths matching these patterns will be skipped when running ShellCheck.
+          Space-separated. Patterns containing spaces are not supported.
+          Wildcard asterisks (*) are supported.
+          Note that all paths are prefixed with './', so in order to exclude a path,
+          you the pattern must begin with './' or '*'.
 
       operating-system:
         type: string
@@ -71,7 +74,7 @@ jobs:
     - name: (Setup) Fail if we did not choose a ShellCheck archive
       if: env.SHELLCHECK_ARCHIVE == ''
       run: |
-          echo "::error::Error: Invalid input for operating-system: ${{ inputs.operating-system }}." && exit 1
+          echo "::error::Error: Invalid input for operating-system: ${{ inputs.operating-system }}. Must be 'ubuntu' or 'macos'." && exit 1
 
     - name: (Setup) Download & unpack ShellCheck
       run: curl -L --fail --silent --show-error "https://github.com/koalaman/shellcheck/releases/download/${{ inputs.shellcheck-version }}/${{ env.SHELLCHECK_ARCHIVE }}" | tar --extract --xz
@@ -79,23 +82,32 @@ jobs:
     - name: (Setup) Install ShellCheck
       run: sudo cp "shellcheck-${{ inputs.shellcheck-version }}/shellcheck" /usr/local/bin
 
-    - name: (Setup) Show ShellCheck version
-      run: shellcheck -V
-
     - name: (Setup) Check out repository branch
       uses: actions/checkout@v3
 
+    - name: Build the command for findings shell scripts
+      run: |
+          shellcheck_find_cmd="find . -name '*.sh'"
+          for exclude_pattern in ${{ inputs.exclude-patterns }} ; do
+              if [[ -n "$exclude_pattern" ]] ; then
+                  shellcheck_find_cmd="$shellcheck_find_cmd ! -wholename '$exclude_pattern'"
+              fi
+          done
+          echo "SHELLCHECK_FIND_CMD=$shellcheck_find_cmd" >> "$GITHUB_ENV"
+
     - name: Ensure that at least one script will be checked
       run: |
-        if [[ -z "$(find ${{ inputs.root-dirs }} -name '*.sh')" ]] ; then
-          echo "::error::Error: No .sh files found within any of the root-dirs: ${{ inputs.root-dirs }}"
+        if [[ -z "$(${{ env.SHELLCHECK_FIND_CMD }}})" ]] ; then
+          echo "::error::Error: No .sh files found for input to ShellCheck!"
           exit 1
         fi 
 
     - name: Print helpful information
       run: |
+        shellcheck -V
+        echo
         echo "The following shell scripts will be checked:"
-        find ${{ inputs.root-dirs }} -name '*.sh'
+        ${{ env.SHELLCHECK_FIND_CMD }}
         echo
         echo "If ShellCheck passes, the next step will have no output."
         echo "If ShellCheck fails, you should see a list of violations."
@@ -107,5 +119,5 @@ jobs:
     # This step is intentionally a big one-line command so that
     # devs can easily copy it and run it on their own machine.
     - name: Run ShellCheck
-      run: find ${{ inputs.root-dirs }} -name '*.sh' -print0 | xargs -0 shellcheck ${{ inputs.shellcheck-options }}
+      run: ${{ env.SHELLCHECK_FIND_CMD }} -print0 | xargs -0 shellcheck ${{ inputs.shellcheck-options }}
 
