@@ -88,10 +88,11 @@ jobs:
     - name: Build the command for findings shell scripts
       run: |
           shellcheck_find_cmd="find . -name '*.sh'"
-          for exclude_pattern in ${{ inputs.exclude-patterns }} ; do
-              if [[ -n "$exclude_pattern" ]] ; then
-                  shellcheck_find_cmd="$shellcheck_find_cmd ! -wholename '$exclude_pattern'"
-              fi
+          # Convert space-delimited exclude pattern into a proper array of exclusions,
+          # and then loop through that array in order to build the 'find' command.
+          read -r -a exclude_patterns <<<'${{ inputs.exclude-patterns }}'
+          for exclude_pattern in "${exclude_patterns[@]}" ; do
+              shellcheck_find_cmd="$shellcheck_find_cmd ! -wholename '$exclude_pattern'"
           done
           echo "SHELLCHECK_FIND_CMD=$shellcheck_find_cmd" >> "$GITHUB_ENV"
 
