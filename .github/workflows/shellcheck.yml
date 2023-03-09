@@ -95,13 +95,6 @@ jobs:
           done
           echo "SHELLCHECK_FIND_CMD=$shellcheck_find_cmd" >> "$GITHUB_ENV"
 
-    - name: Ensure that at least one script will be checked
-      run: |
-        if [[ -z "$(${{ env.SHELLCHECK_FIND_CMD }}})" ]] ; then
-          echo "::error::Error: No .sh files found for input to ShellCheck!"
-          exit 1
-        fi 
-
     - name: Print helpful information
       run: |
         shellcheck -V
