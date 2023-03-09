@@ -19,7 +19,7 @@ on:
           Space-separated. Patterns containing spaces are not supported.
           Wildcard asterisks (*) are supported.
           Note that all paths are prefixed with './', so in order to exclude a path,
-          you the pattern must begin with './' or '*'.
+          you must begin the pattern with './' or '*'.
 
       operating-system:
         type: string
