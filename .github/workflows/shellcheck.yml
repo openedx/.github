@@ -85,7 +85,7 @@ jobs:
     - name: (Setup) Check out repository branch
       uses: actions/checkout@v3
 
-    - name: Build the command for findings shell scripts
+    - name: Build the command for finding shell scripts
       run: |
           shellcheck_find_cmd="find . -name '*.sh'"
           # Convert space-delimited exclude pattern into a proper array of exclusions,
