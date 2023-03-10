@@ -18,8 +18,8 @@ on:
           File paths matching these patterns will be skipped when running ShellCheck.
           Space-separated. Patterns containing spaces are not supported.
           Wildcard asterisks (*) are supported.
-          Note that all paths are prefixed with './', so in order to exclude a path,
-          you must begin the pattern with './' or '*'.
+          This pattern will be matched against paths which all begin with './'; so,
+          in order to match any paths, your patterns should each begin with './' or '*'.
 
       operating-system:
         type: string
