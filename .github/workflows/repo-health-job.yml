@@ -1,0 +1,113 @@
+name: Repo Health Checks
+
+on:
+  workflow_call:
+    secrets:
+      REPO_HEALTH_BOT_TOKEN: 
+        required: true
+      REPO_HEALTH_BOT_EMAIL:
+        required: true
+    inputs:
+      ORG_NAMES:
+        description: "Space separated list of organisation names to parse repos. i.e. 'openedx edx . . .' "
+        type: string
+        default: "edx openedx"
+      EDX_REPO_HEALTH_BRANCH:
+        description: "Branch of the edx-repo-health repo to check out"
+        type: string
+        default: "master"
+      ONLY_CHECK_THIS_REPOSITORY:
+        description: "If you only want to run repo health on one repository, set this to org/name of said repository."
+        type: string
+        default: ""
+      REPORT_DATE:
+        description: "The date for which repo health data is required.(format: YYYY-MM-DD)"
+        type: string
+        default: ""
+      REPO_HEALTH_GOOGLE_CREDS_FILE:
+        description: "Link to the repo health credentials file"
+        type: string
+        default: ""
+      REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL:
+        description: "URL for the repo health spreadsheet to populate"
+        type: string
+        default: ""
+      REPO_HEALTH_REPOS_WORKSHEET_ID:
+        description: "Repo health repositories sheet ID"
+        type: number
+        default: 0
+      TARGET_REPO_TO_STORE_REPORTS:
+        description: "Target repo to store the csv reports & results i.e. org/repo-name"
+        type: string
+        default: "edx/repo-health-data"
+      REPOS_TO_IGNORE:
+        description: "Space seperated list of repos to be ignored i.e. 'repo1 repo2 . . .' "
+        type: string
+        default: "clamps-ghsa-c4rq-qwgr-pj5h"
+
+jobs:
+  repo_health_check:
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        python-version: ["3.8"]
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: setup python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Clone edx-repo-health repo
+        uses: actions/checkout@v3
+        with:
+          repository: openedx/edx-repo-health
+          path: edx-repo-health
+          ref: ${{ inputs.EDX_REPO_HEALTH_BRANCH }}
+      
+      - name: Install pip & pip-tools
+        run: |
+          python3 -m pip install edx-repo-health/requirements/pip.txt
+          python3 -m pip install edx-repo-health/requirements/pip-tools.txt
+      
+      - name: Clone testeng-ci repo
+        uses: actions/checkout@v3
+        with:
+          repository: openedx/testeng-ci
+          path: testeng-ci
+          ref: "master"
+      
+      - name: Clone repo-tools repo
+        uses: actions/checkout@v3
+        with:
+          repository: openedx/repo-tools
+          path: repo_tools
+          ref: master
+      
+      - name: Clone repo-health-data repo
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.TARGET_REPO_TO_STORE_REPORTS }}
+          path: repo-health-data
+          ref: master
+          token: ${{ secrets.REPO_HEALTH_BOT_TOKEN}}
+
+      - name: Run repo health org script
+        env:
+          ORG_NAMES: ${{ inputs.ORG_NAMES }}
+          REPORT_DATE: ${{ inputs.REPORT_DATE }}
+          GITHUB_TOKEN: ${{ secrets.REPO_HEALTH_BOT_TOKEN }}
+          GITHUB_USER_EMAIL: ${{ secrets.REPO_HEALTH_BOT_EMAIL }}
+          REPOS_TO_IGNORE: ${{ inputs.REPOS_TO_IGNORE }}
+          EDX_REPO_HEALTH_BRANCH: ${{ inputs.EDX_REPO_HEALTH_BRANCH }}
+          ONLY_CHECK_THIS_REPOSITORY: ${{ inputs.ONLY_CHECK_THIS_REPOSITORY }}
+          REPO_HEALTH_GOOGLE_CREDS_FILE: ${{ inputs.REPO_HEALTH_GOOGLE_CREDS_FILE }}
+          REPO_HEALTH_REPOS_WORKSHEET_ID: ${{ inputs.REPO_HEALTH_REPOS_WORKSHEET_ID }}
+          REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL: ${{ inputs.REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL }}
+        run: |
+          chmod +x edx-repo-health/scripts/repo-health-script.sh
+          bash edx-repo-health/scripts/repo-health-script.sh
