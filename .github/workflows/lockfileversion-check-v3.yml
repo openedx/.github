@@ -11,20 +11,20 @@ on:
 
 jobs:
   version-check:
-    runs-on:  ubuntu-20.04
-    outputs:
-      output1: ${{ steps.getversion.outputs.version }}
+    runs-on: ubuntu-20.04
+    env:
+      VERSION: ${{ steps.getversion.outputs.version }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Retrieve version
-      id: getversion
-      run: |
-        echo "::set-output name=version::$(cat package-lock.json | grep '\"lockfileVersion\": 3,')"
+      - name: Retrieve version
+        id: getversion
+        run: |
+          echo "::set-output name=version::$(cat package-lock.json | grep '\"lockfileVersion\": 3,')"
 
-    - name: check value
-      if: ${{ steps.getversion.outputs.version == null }}
-      run: |
-        echo "ERROR: Outdated package-lock file. Use NPM9 to install dependencies "
-        exit 1
+      - name: Check value
+        if: env.VERSION == null
+        run: |
+          echo "ERROR: Outdated package-lock file. Use NPM9 to install dependencies "
+          exit 1
