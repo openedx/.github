@@ -1,0 +1,7 @@
+{
+     "name": "LockfileVersion v3 Workflow",
+     "description": "Verify lockfileVersion is 3 in package-lock.json",
+     "iconName": "edx-workflow-template-icon",
+     "categories": [],
+     "filePatterns": []
+ }
