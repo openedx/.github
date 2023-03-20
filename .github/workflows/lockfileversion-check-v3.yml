@@ -12,8 +12,6 @@ on:
 jobs:
   version-check:
     runs-on: ubuntu-20.04
-    outputs:
-      output1: ${{ steps.getversion.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -21,10 +19,10 @@ jobs:
       - name: Retrieve version
         id: getversion
         run: |
-          echo "::set-output name=version::$(cat package-lock.json | grep '\"lockfileVersion\": 3,')"
+          echo "VERSION=$(cat package-lock.json | grep '\"lockfileVersion\": 3,')" >> $GITHUB_ENV
 
       - name: Check value
-        if: ${{ steps.getversion.outputs.version == null }}
+        if: ${{ env.VERSION == null }}
         run: |
           echo "ERROR: Outdated package-lock file. Use NPM9 to install dependencies "
           exit 1
