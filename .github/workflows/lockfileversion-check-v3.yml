@@ -23,7 +23,7 @@ jobs:
         run: |
           echo "::set-output name=version::$(cat package-lock.json | grep '\"lockfileVersion\": 3,')"
 
-      - name: check value
+      - name: Check value
         if: ${{ steps.getversion.outputs.version == null }}
         run: |
           echo "ERROR: Outdated package-lock file. Use NPM9 to install dependencies "
