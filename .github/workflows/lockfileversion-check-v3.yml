@@ -13,7 +13,7 @@ jobs:
   version-check:
     runs-on: ubuntu-20.04
     env:
-      VERSION: ${{ steps.getversion.outputs.version }}
+      VERSION: null
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -21,7 +21,7 @@ jobs:
       - name: Retrieve version
         id: getversion
         run: |
-          echo "::set-output name=version::$(cat package-lock.json | grep '\"lockfileVersion\": 3,')"
+          cat package-lock.json | grep '\"lockfileVersion\": 3,' > env.VERSION
 
       - name: Check value
         if: env.VERSION == null
