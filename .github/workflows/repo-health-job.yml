@@ -4,9 +4,20 @@ on:
   workflow_call:
     secrets:
       REPO_HEALTH_BOT_TOKEN: 
+        description: "Github token with read access to all repos and write access to the target repo"
         required: true
       REPO_HEALTH_BOT_EMAIL:
+        description: "Email Address for the REPO HEALTH BOT (needed to commit changes in the repos)"
         required: true
+      REPO_HEALTH_GOOGLE_CREDS_FILE:
+        description: "Link to the repo health credentials file"
+        required: true
+        default: ""
+      READTHEDOCS_API_KEY:
+        description: "API Key for READ THE DOCS Access"
+        required: true
+        default: ""
+
     inputs:
       ORG_NAMES:
         description: "Space separated list of organisation names to parse repos. i.e. 'openedx edx . . .' "
@@ -22,10 +33,6 @@ on:
         default: ""
       REPORT_DATE:
         description: "The date for which repo health data is required.(format: YYYY-MM-DD)"
-        type: string
-        default: ""
-      REPO_HEALTH_GOOGLE_CREDS_FILE:
-        description: "Link to the repo health credentials file"
         type: string
         default: ""
       REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL:
@@ -71,8 +78,8 @@ jobs:
       
       - name: Install pip & pip-tools
         run: |
-          python3 -m pip install edx-repo-health/requirements/pip.txt
-          python3 -m pip install edx-repo-health/requirements/pip-tools.txt
+          python3 -m pip install -r edx-repo-health/requirements/pip.txt
+          python3 -m pip install -r edx-repo-health/requirements/pip-tools.txt
       
       - name: Clone testeng-ci repo
         uses: actions/checkout@v3
@@ -104,8 +111,9 @@ jobs:
           GITHUB_USER_EMAIL: ${{ secrets.REPO_HEALTH_BOT_EMAIL }}
           REPOS_TO_IGNORE: ${{ inputs.REPOS_TO_IGNORE }}
           EDX_REPO_HEALTH_BRANCH: ${{ inputs.EDX_REPO_HEALTH_BRANCH }}
+          READTHEDOCS_API_KEY: ${{ secrets.READTHEDOCS_API_KEY }}
           ONLY_CHECK_THIS_REPOSITORY: ${{ inputs.ONLY_CHECK_THIS_REPOSITORY }}
-          REPO_HEALTH_GOOGLE_CREDS_FILE: ${{ inputs.REPO_HEALTH_GOOGLE_CREDS_FILE }}
+          REPO_HEALTH_GOOGLE_CREDS_FILE: ${{ secrets.REPO_HEALTH_GOOGLE_CREDS_FILE }}
           REPO_HEALTH_REPOS_WORKSHEET_ID: ${{ inputs.REPO_HEALTH_REPOS_WORKSHEET_ID }}
           REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL: ${{ inputs.REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL }}
         run: |
