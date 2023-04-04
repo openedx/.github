@@ -39,8 +39,8 @@ on:
         default: ""
       REPO_HEALTH_REPOS_WORKSHEET_ID:
         description: "Repo health repositories sheet ID"
-        type: number
-        default: 0
+        type: string
+        default: "0"
       TARGET_REPO_TO_STORE_REPORTS:
         description: "Target repo to store the csv reports & results i.e. org/repo-name"
         type: string
