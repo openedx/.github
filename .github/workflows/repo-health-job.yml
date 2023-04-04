@@ -12,11 +12,9 @@ on:
       REPO_HEALTH_GOOGLE_CREDS_FILE:
         description: "Link to the repo health credentials file"
         required: true
-        default: ""
       READTHEDOCS_API_KEY:
         description: "API Key for READ THE DOCS Access"
         required: true
-        default: ""
 
     inputs:
       ORG_NAMES:
