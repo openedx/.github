@@ -62,4 +62,62 @@ jobs:
           echo "urls=$(python scripts/get_ready_to_merge_prs.py ${{ inputs.ORG_NAME || 'openedx' }})" >> $GITHUB_OUTPUT
           
 
-  
+  merge_pr:
+    runs-on: ubuntu-20.04
+    needs:
+      - get_list_of_prs
+    if: needs.get_list_of_prs.outputs.urls != '[]' # Skip if there are no URLs found
+    strategy:
+      fail-fast: false
+      matrix:
+        url: ${{ fromJSON(needs.get_list_of_prs.outputs.urls) }}
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+
+      - name: Checkout tools repo
+        uses: actions/checkout@v3
+        with:
+          repository: openedx/tubular
+          path: tubular
+
+      - name: Setup tubular
+        run: |
+          cd tubular
+          pip install -e .
+
+      - name: Extract parameters from URL
+        run: |
+          url="${{ matrix.url }}"
+
+          # Extract the parameters
+          org_name=$(echo $url | awk -F/ '{print $4}')
+          repo_name=$(echo $url | awk -F/ '{print $5}')
+          pr_number=$(echo $url | awk -F/ '{print $7}')
+
+          # store for next steps
+          echo "org_name=${org_name}" >> $GITHUB_ENV
+          echo "repo_name=${repo_name}" >> $GITHUB_ENV
+          echo "pr_number=${pr_number}" >> $GITHUB_ENV
+
+          #print out
+          echo "Organization: $org_name"
+          echo "Repo: $repo_name"
+          echo "PR: $pr_number"
+
+      - name: Check test status of pr
+        env:
+          GIT_TOKEN: ${{ secrets.requirements_bot_github_token }}
+        run: |
+          check_pr_tests_status.py --org "${{ env.org_name }}" --repo "${{ env.repo_name }}" --pr_number \
+          "${{ env.pr_number }}" --exclude-contexts 'Renovate|[Cc]odecov|Dependabot|edx-platform-ci' --all-checks
+
+      - name: Merge pull request
+        env:
+          GIT_TOKEN: ${{ secrets.requirements_bot_github_token }}
+        run: |
+          merge_pr.py --org "${{ env.org_name }}" --repo "${{ env.repo_name }}" --pr_number "${{ env.pr_number }}"
+
