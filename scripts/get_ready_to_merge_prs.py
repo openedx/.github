@@ -77,10 +77,6 @@ def parse_urls(data):
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        org = sys.argv[1]
-        if org.lower() not in ORGS:
-            print(f"organization name {org} is not valid. Valid Orgs: {ORGS}")
-            sys.exit(1)
-        get_ready_to_merge_prs(org)
+        get_ready_to_merge_prs(sys.argv[1])
     else:
         print(f"{', '.join(ORGS)} are vallid organizations")
