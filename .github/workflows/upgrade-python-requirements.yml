@@ -28,6 +28,11 @@ on:
         required: false
         default: false
         type: boolean
+      python_version:
+        description: "The version of python to use for running this job. Defaults to python3.8"
+        required: false
+        default: "3.8"
+        type: string
     secrets:
       requirements_bot_github_token:
         required: true
@@ -41,10 +46,6 @@ on:
 jobs:
   upgrade_requirements:
     runs-on: ubuntu-20.04
-
-    strategy:
-      matrix:
-        python-version: ["3.8"]
 
     steps:
       - name: setup target branch
@@ -60,7 +61,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ inputs.python_version }}
 
       - name: make upgrade
         run: |
