@@ -79,4 +79,4 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         get_ready_to_merge_prs(sys.argv[1])
     else:
-        print(f"{', '.join(ORGS)} are vallid organizations")
+        print(f"Please provide a valid github org name.  {', '.join(ORGS)} are examples of valid organizations.")

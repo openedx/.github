@@ -20,7 +20,6 @@ on:
       ORG_NAME:
         description: "Organisation name to merge PRs for, default openedx"
         type: string
-        default: ""
 
   schedule:
     # will run the job at 10 AM every day (UTC),
