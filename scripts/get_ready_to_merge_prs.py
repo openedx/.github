@@ -17,7 +17,7 @@ GIT_API_URL = 'https://api.github.com/search/issues?per_page=100'
 ORGS = ['edx', 'openedx']
 
 
-def get_ready_to_merge_prs():
+def get_ready_to_merge_prs(org: str):
     """
     get a list of all prs which are open and have a label "Ready to merge" in organization.
 
@@ -32,9 +32,7 @@ def get_ready_to_merge_prs():
     if not token:
         LOG.error('GIT_TOKEN is missing from environment variables')
         sys.exit(1)
-    urls = []
-    for org in ORGS:
-        urls.extend(get_github_api_response(org, token))
+    urls = get_github_api_response(org, token)
     print(json.dumps(urls))
     return urls
 
@@ -78,4 +76,7 @@ def parse_urls(data):
 
 
 if __name__ == "__main__":
-    get_ready_to_merge_prs()
+    if len(sys.argv) > 1:
+        get_ready_to_merge_prs(sys.argv[1])
+    else:
+        print(f"Please provide a valid github org name.  {', '.join(ORGS)} are examples of valid organizations.")
