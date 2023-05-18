@@ -9,7 +9,7 @@ If you believe that you have discovered a security vulnerability or other suspic
     * proof-of-concept code; and
     * links to vulnerable code.
 
-Upon receipt of your email, the Open edX Security Group will acknowledge the receipt of your email, review and triage your security vulnerability, and act accordingly. If necessary, the group will reach out to you for more information. The group will not provide communication on the status of the security vulnerability after it has been reviewed and triaged.
+Upon receipt of your email, the Open edX Security Working Group will acknowledge the receipt of your email, review and triage your security vulnerability, and act accordingly. If necessary, the group will reach out to you for more information. The group will not provide communication on the status of the security vulnerability after it has been reviewed and triaged.
 
 ## Bug Bounty
 The Open edX project does not offer bug bounties for security vulnerability disclosures.
