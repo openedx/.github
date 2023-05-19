@@ -1,8 +1,8 @@
-<!-- This is a copy of https://open.edx.org/code-of-conduct/ -->
+<!-- This is a copy of https://openedx.org/code-of-conduct/ -->
 
 # Open edX Code of Conduct
 
-(This is a GitHub-hosted copy of the official Code at [Open edX Community Code of Conduct](https://open.edx.org/code-of-conduct/).)
+(This is a GitHub-hosted copy of the official Code at [Open edX Community Code of Conduct](https://openedx.org/code-of-conduct/).)
 
 ## The Mission
 
@@ -11,7 +11,7 @@ edX and the Open edX community seek to foster an open and welcoming environment 
 
 ## Guidelines
 
-In addition to the [Rules for Online Conduct for the Open edX website](https://open.edx.org/terms-of-use/), the guidelines (“Guidelines”) below apply to anyone who is using official Open edX discussion venues and communication channels such as mailing lists, pull requests, blogs, meet-ups, conferences, and discussion boards (collectively, “Official Open edX Venues”).
+In addition to the [Rules for Online Conduct for the Open edX website](https://openedx.org/terms-of-use/), the guidelines (“Guidelines”) below apply to anyone who is using official Open edX discussion venues and communication channels such as mailing lists, pull requests, blogs, meet-ups, conferences, and discussion boards (collectively, “Official Open edX Venues”).
 
 - **Accounts and Names**: Pseudonyms and real names are both allowed; [sockpuppets](https://en.wikipedia.org/wiki/Sockpuppet_(Internet)) are not.
 - **Be Kind**: Being welcoming to new community members is everyone’s responsibility. Show empathy; use welcoming and inclusive language. Critique is encouraged; being mean is not.
@@ -40,11 +40,14 @@ Responses by the Governance Team may include without limitation the removal, edi
 
 For most offences the Governance Team will provide a warning in an email to the offender. However, certain behaviors will be considered grounds for immediate removal, including, but not limited to, harassment, belligerent behavior, and bigotry. In such cases, we reserve the right to remove a contributor without advance notice. We will provide a process for appeal, but all such cases will be at the sole discretion of the Governance Team.
 
-Community members may report instances of abusive, harassing, or otherwise unacceptable behavior by contacting the community manager at <oscm@edx.org>. Further details of specific enforcement policies may be posted separately. In the case that a report is being made about a specific member of the Governance Team and raising the issue with a name individual is preferable, the following people may be emailed directly: Edward Zarecor (<e0d@edx.org>), Ned Batchelder (<ned@edx.org>).
+Community members may report instances of abusive, harassing, or otherwise unacceptable behavior by contacting the community manager at <oscm@axim.org>. Further details of specific enforcement policies may be posted separately. In the case that a report is being made about a specific member of the Governance Team and raising the issue with a name individual is preferable, the following people may be emailed directly:
+
+- Edward Zarecor (<ed@axim.org>)
+- Sarina Canelake (<sarina@axim.org>)
 
 Project maintainers who do not follow or enforce the Code of Conduct in good faith may face temporary or permanent repercussions as escalated to and determined by the Governance Team.
 
-Appeals to bans should also be directed to <oscm@edx.org>.
+Appeals to bans should also be directed to <oscm@axim.org>.
 
 
 ## Attribution
