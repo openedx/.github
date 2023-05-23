@@ -47,11 +47,11 @@ jobs:
 
       - name: Download script file
         # Only download the script file if the repository is not openedx/.github
-        # Because, we were not able to download correclty outside of openedx due to calling reusable workflow call
+        # Because, we were not able to download correctly outside of openedx due to calling reusable workflow call
         if: ${{ github.repository != 'openedx/.github' }}
         run: |
           mkdir -p scripts
-          curl -o scripts/get_ready_to_merge_prs.py https://raw.githubusercontent.com/${{ github.repository }}/master/scripts/get_ready_to_merge_prs.py
+          curl -o scripts/get_ready_to_merge_prs.py https://raw.githubusercontent.com/openedx/.github/master/scripts/get_ready_to_merge_prs.py
 
       - name: Get urls of all eligible prs
         env:
