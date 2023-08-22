@@ -2,30 +2,57 @@ name: Repo Health Workflow Call
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    # Run at 13:00 UTC everyday. For details, see https://crontab.guru/#0_0_*_*_*
+    - cron: "0 13 * * *"
   workflow_dispatch:
     inputs:
-      ORG_NAMES: 
-        description: "Space separated list of organisation names to parse repos. i.e. 'openedx edx . . . ' "
+      repo_health_branch:
+        description: "Target branch of edx repo health to use for running checks"
         type: string
-        default: "edx openedx"
-      REPOS_TO_IGNORE: 
-        description: "Space separated list of organisation names to parse repos. i.e. 'repo1 repo2 . . . ' "
+        default: "master"
+      report_date:
+        description: "The date for which repo health data is required. (format: YYYY-MM-DD)"
         type: string
         default: ""
+      org_names:
+        description: "Space separated list of org names"
+        type: string
+        default: "edx openedx"
 
 jobs:
+  set-default-inputs:
+    # Implementing bash parameter expansion to handle inputs
+    # for both scheduled and workflow_dispatch triggers
+    runs-on: ubuntu-latest
+    outputs:
+      repo_health_branch: ${{ steps.set_repo_health_value.outputs.REPO_HEALTH_BRANCH }}
+      orgs: ${{ steps.set_orgs_value.outputs.ORGS }}
+    steps:
+      - name: Set repo health value
+        id: set_repo_health_value
+        run: |
+          repo_health_input="${{ github.event.inputs.repo_health_branch }}"
+          echo "REPO_HEALTH_BRANCH=${repo_health_input:-"master"}" >> "$GITHUB_OUTPUT"
+      - name: Set orgs value
+        id: set_orgs_value
+        run: |      
+          orgs_input="${{ github.event.inputs.org_names }}"
+          echo "ORGS=${orgs_input:-"edx openedx"}" >> "$GITHUB_OUTPUT"
+
   call-repo-health-job-workflow:
-    uses: usamasadiq/openedx-github/.github/workflows/repo-health-job.yml@master
+    needs: [set-default-inputs]
+    # Detailed description of each parameter is within the target reusable workflow file
     with:
-      REPORT_DATE: ""
+      REPORT_DATE: ${{ github.event.inputs.report_date }}
+      EDX_REPO_HEALTH_BRANCH: ${{ needs.set-default-inputs.outputs.repo_health_branch }}
+      ORG_NAMES: ${{ needs.set-default-inputs.outputs.orgs }}
       REPOS_TO_IGNORE: ""
-      ONLY_CHECK_THIS_REPOSITORY: ""
       TARGET_REPO_TO_STORE_REPORTS: ""
-      REPO_HEALTH_GOOGLE_CREDS_FILE: ""
       REPO_HEALTH_REPOS_WORKSHEET_ID: 0
-      ORG_NAMES: ${{ inputs.ORG_NAMES }}
       REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL: ""
     secrets:
-      REPO_HEALTH_TOKEN: ${{ secrets.token }}
-      REPO_HEALTH_BOT_EMAIL: "repo_health_bot@edx.org"
+      READTHEDOCS_API_KEY: "${{ secrets.READTHEDOCS_API_KEY }}"
+      REPO_HEALTH_GOOGLE_CREDS_FILE: ${{ secrets.REPO_HEALTH_CREDS_FILE }}
+      REPO_HEALTH_BOT_TOKEN: ${{ secrets.REPO_HEALTH_BOT_TOKEN }}
+      REPO_HEALTH_BOT_EMAIL: ${{ secrets.REPO_HEALTH_BOT_EMAIL }}
+    uses: openedx/.github/.github/workflows/repo-health-job.yml@master
