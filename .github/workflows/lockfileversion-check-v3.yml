@@ -4,6 +4,8 @@
 # This is a workflow to verify the use of NPM 9 and lockfileVersion 3
 # and intends to phase out the older workflow checking for lockfileVersion 2.
 
+# !IMPORTANT! This workflow needs to be removed once all the consumers start using lockfile-check.yml.
+
 name: lockfileVersion check v3
 
 on:

@@ -1,0 +1,49 @@
+# Check package-lock file version and mismatch issues
+
+# This is a workflow to verify the use of NPM 9, lockfileVersion 3
+# and also detects mismatch between pacakge.json and package-lock.json.
+# This workflow intends to phase out the older workflow checking for lockfileVersion 2 & 3.
+
+name: lockfile check
+
+on:
+  - workflow_call
+
+jobs:
+  version-check:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Retrieve version
+        id: getversion
+        run: |
+          echo "VERSION=$(cat package-lock.json | grep '\"lockfileVersion\": 3,')" >> $GITHUB_ENV
+
+      - name: Check value
+        if: ${{ env.VERSION == null }}
+        run: |
+          echo "ERROR: Outdated package-lock file. Use NPM9 to install dependencies "
+          exit 1
+
+  mismatch-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Check sync
+        run: |
+          problems=$(npm ls --all --package-lock-only --json | jq '.problems[]?' -r)
+          if [[ -n "$problems" ]]; then
+            echo "$problems"
+            echo
+            echo "Mismatch between package.json and package-lock.json. Please regenerate package lock file with 'npm install'."
+            exit 1
+          fi

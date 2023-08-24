@@ -1,5 +1,7 @@
 #check package-lock file version
 
+# !IMPORTANT! This workflow needs to be removed once all the consumers start using lockfile-check.yml.
+
 name: lockfileVersion check
 
 on:
