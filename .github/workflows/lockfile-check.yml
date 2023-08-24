@@ -1,8 +1,8 @@
-#check package-lock file version and mismatch issues
+# Check package-lock file version and mismatch issues
 
-# With move to Node.js v18 and NPM 9, the resulting lockfileVersion is updated to 3.
-# This is a workflow to verify the use of NPM 9 and lockfileVersion 3
-# and intends to phase out the older workflow checking for lockfileVersion 2.
+# This is a workflow to verify the use of NPM 9, lockfileVersion 3
+# and also detects mismatch between pacakge.json and package-lock.json.
+# This workflow intends to phase out the older workflow checking for lockfileVersion 2 & 3.
 
 name: lockfile check
 
@@ -29,10 +29,6 @@ jobs:
 
   mismatch-check:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [18]
-
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -40,7 +36,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 18
 
       - name: Check sync
         run: |

@@ -1,0 +1,30 @@
+#check package-lock file version
+
+# With move to Node.js v18 and NPM 9, the resulting lockfileVersion is updated to 3.
+# This is a workflow to verify the use of NPM 9 and lockfileVersion 3
+# and intends to phase out the older workflow checking for lockfileVersion 2.
+
+# !IMPORTANT! This workflow needs to be removed once all the consumers start using lockfile-check.yml.
+
+name: lockfileVersion check v3
+
+on:
+  - workflow_call
+
+jobs:
+  version-check:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Retrieve version
+        id: getversion
+        run: |
+          echo "VERSION=$(cat package-lock.json | grep '\"lockfileVersion\": 3,')" >> $GITHUB_ENV
+
+      - name: Check value
+        if: ${{ env.VERSION == null }}
+        run: |
+          echo "ERROR: Outdated package-lock file. Use NPM9 to install dependencies "
+          exit 1
