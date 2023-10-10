@@ -1,4 +1,7 @@
 
-#ignore .idea directory
+# .idea directory
 .idea
+
+# editor-generated backup files
+*.bak
 *~

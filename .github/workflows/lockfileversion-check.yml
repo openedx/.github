@@ -1,5 +1,7 @@
 #check package-lock file version
 
+# !IMPORTANT! This workflow needs to be removed once all the consumers start using lockfile-check.yml.
+
 name: lockfileVersion check
 
 on:
@@ -12,7 +14,7 @@ jobs:
       output1: ${{ steps.getversion.outputs.version }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Retrieve version
       id: getversion
