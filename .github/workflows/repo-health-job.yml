@@ -17,6 +17,10 @@ on:
         required: true
 
     inputs:
+      DASHBOARD_NAME:
+        description: "Dashboard name to run the job for i.e. 'repo_health or dependencies_health . . .' "
+        type: string
+        default: "repo_health"
       ORG_NAMES:
         description: "Space separated list of organisation names to parse repos. i.e. 'openedx edx . . .' "
         type: string
@@ -102,6 +106,7 @@ jobs:
           token: ${{ secrets.REPO_HEALTH_BOT_TOKEN}}
 
       - name: Run repo health org script
+        if: ${{ inputs.DASHBOARD_NAME == 'repo_health' }}
         env:
           ORG_NAMES: ${{ inputs.ORG_NAMES }}
           REPORT_DATE: ${{ inputs.REPORT_DATE }}
@@ -117,11 +122,24 @@ jobs:
         run: |
           bash edx-repo-health/scripts/repo-health-script.sh
 
+      - name: Run dependencies health dashboard script
+        if: ${{ inputs.DASHBOARD_NAME == 'dependencies_health' }}
+        env:
+          REPORT_DATE: ${{ inputs.REPORT_DATE }}
+          GITHUB_TOKEN: ${{ secrets.REPO_HEALTH_BOT_TOKEN }}
+          GITHUB_USER_EMAIL: ${{ secrets.REPO_HEALTH_BOT_EMAIL }}
+          EDX_REPO_HEALTH_BRANCH: ${{ inputs.EDX_REPO_HEALTH_BRANCH }}
+          ONLY_CHECK_THIS_REPOSITORY: ${{ inputs.ONLY_CHECK_THIS_REPOSITORY }}
+        run: |
+          bash edx-repo-health/scripts/dependencies-health-script.sh
+
       - name: Run repo health artifact script
+        if: ${{ inputs.DASHBOARD_NAME == 'repo_health' }}
         run: |
           bash edx-repo-health/scripts/repo-health-artifact.sh
-      
+        
       - name: Upload sqlite db as artifact
+        if: ${{ inputs.DASHBOARD_NAME == 'repo_health' }}
         uses: actions/upload-artifact@v4
         with:
           name: sqlite db artifact
