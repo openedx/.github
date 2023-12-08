@@ -78,7 +78,7 @@ jobs:
         run: |
           python3 -m pip install -r edx-repo-health/requirements/pip.txt
           python3 -m pip install -r edx-repo-health/requirements/pip-tools.txt
-      
+
       - name: Clone testeng-ci repo
         uses: actions/checkout@v4
         with:
@@ -115,5 +115,14 @@ jobs:
           REPO_HEALTH_REPOS_WORKSHEET_ID: ${{ inputs.REPO_HEALTH_REPOS_WORKSHEET_ID }}
           REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL: ${{ inputs.REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL }}
         run: |
-          chmod +x edx-repo-health/scripts/repo-health-script.sh
           bash edx-repo-health/scripts/repo-health-script.sh
+
+      - name: Run repo health artifact script
+        run: |
+          bash edx-repo-health/scripts/repo-health-artifact.sh
+      
+      - name: Upload sqlite db as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sqlite db artifact
+          path: dashboards/dashboard.sqlite3
