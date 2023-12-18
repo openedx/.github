@@ -122,7 +122,7 @@ jobs:
           bash edx-repo-health/scripts/repo-health-artifact.sh
       
       - name: Upload sqlite db as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sqlite db artifact
           path: dashboards/dashboard.sqlite3
