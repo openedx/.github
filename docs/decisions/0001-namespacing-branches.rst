@@ -49,7 +49,7 @@ Decisions
 3. The global namespace will be reserved for global project purposes
 
 Going forward branches and tags that originate from any specific
-organization partipatinging in the Open edX project must by namespaced
+organization participating in the Open edX project must by namespaced
 as follows:
 
 ``acme/release``
