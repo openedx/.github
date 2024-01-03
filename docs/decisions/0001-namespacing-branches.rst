@@ -63,7 +63,7 @@ further qualified to provide additional information and specificity.
 
 For example:
 
-``release`` would be consider in the global namespace.
+``release`` would be considered in the global namespace.
 
 ``release/palm`` would represent the branch for an officially
 sanctioned Open edX named release.
