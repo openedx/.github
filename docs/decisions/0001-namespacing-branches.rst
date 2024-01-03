@@ -11,7 +11,7 @@ Context
 
 This ADR was written in response to this `Discourse thread`_.
 
-Currently, 2U continuous delevery tooling creates branches and tags
+Currently, 2U continuous delivery tooling creates branches and tags
 in the repository "global namespace."  By that I mean that branches
 and tags have the form ``release`` or ``release-candidate-3729``.
 This is confusing because those branches and tags appear to be global,
