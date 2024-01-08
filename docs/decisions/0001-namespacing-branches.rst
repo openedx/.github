@@ -55,7 +55,7 @@ organization or user participating in the Open edX project must by namespaced
 as follows:
 
 * ``$ORGANIZATION/$PURPOSE`` for organizations.
-* ``$GITHUB_USER/$PURPOSE`` for userers.
+* ``$GITHUB_USER/$PURPOSE`` for contributors.
 
 For example:
 
