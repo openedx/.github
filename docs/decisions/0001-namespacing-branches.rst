@@ -4,7 +4,7 @@ Namespacing Branches and Tags
 Status
 ******
 
-Draft
+Accepted
 
 Context
 *******
