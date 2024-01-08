@@ -41,44 +41,55 @@ time.  There are two reasons for that:
 Decisions
 *********
 
-1. We will not forbid project participants with write access to
+1. We will *not* forbid project participants with write access to
    repositories from pushing branches or tags to the canonical
-   upstream hosted at the openedx GitHub organization
-2. We will require that project participants namespace their branches
-   and tags to clarify their origin and purpose
-3. The global namespace will be reserved for global project purposes
+   upstream hosted at the openedx GitHub organization.
+2. However, we *will* require that project participants namespace their
+   upstream branches and tags to clarify their origin and purpose.
+3. The global namespace will be reserved for global project purposes.
+4. Branches within *forks* of Open edX repositories may choose to follow this
+   guidance, but they do not need to.
 
-Going forward branches and tags that originate from any specific
-organization participating in the Open edX project must by namespaced
+Going forward, branches and tags that originate from any specific
+organization or user participating in the Open edX project must by namespaced
 as follows:
 
-``acme/release``
+* ``$ORGANIZATION/$PURPOSE`` for organizations.
+* ``$GITHUB_USER/$PURPOSE`` for userers.
 
-or
+For example:
 
-``acme/release-candidate-3729``
+* ``acme/release``
+* ``acme/release-candidate-3729``
+* ``acme/our-feature``
+* ``e0d/my-feature``
+
+In some cases, multiple namespaces may be appropriate. For example, ``e0d``
+may be working for ``acme`` on a project funded by ``wile-e-coyote``. When in
+doubt, one should choose the namespace which best informs community who manages
+the branch, which in this case would be either ``e0d`` or ``acme``.
 
 In the case of the global namespace, tags and branches may still be
 further qualified to provide additional information and specificity.
 
 For example:
 
-``release`` would be considered in the global namespace.
-
-``release/palm`` would represent the branch for an officially
-sanctioned Open edX named release.
+* ``release`` would be considered in the global namespace.
+* ``release/redwood`` would represent the branch for an officially-
+  sanctioned Open edX named release.
 
 
 Consequences
 ************
 
-1. Continuous delivery systems and other automation should be updated
+#. Continuous delivery systems and other automation should be updated
    across the ecosystem to use the proper naming convention for
-   branches and tags
-2. Existing branches and tags should be updated to use the new naming
-   protocol
-3. There will be no change to the guidance that personal branches
-   should be namespaced by GitHub username.  For example, the pull
-   request for this ADR originated in the branch ``e0d/namespace-adr``
-4. A reasonable grace period should be established to schedule and
-   complete the required work
+   branches and tags. Existing branches and tags should be updated to use the
+   new naming protocol. Axim will announce this to community members.
+#. Axim will ensure that branch namespacing is communicated to new developers
+   via onboarding documentation.
+#. Axim may prune newly-created branches and tags which don't use a proper
+   namespace.
+#. Axim will announce its intent to remove batches of existing branches and
+   tags that don't use namespaces. Each batch will include a reasonable grace
+   period.
