@@ -13,7 +13,7 @@ body:
     attributes:
       label: Proposal Date
       description: The start date of this proposal (likely today)
-      placeholder: "2020-02-29"
+      placeholder: "2024-01-15"
     validations:
       required: true
   - type: input
@@ -21,15 +21,15 @@ body:
     attributes:
       label: Target Ticket Acceptance Date
       description: When is the target date for getting this proposal reviewed and accepted? A good default is approximately 2 weeks from when the ticket is communicated (see [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html)).
-      placeholder: "2020-03-14"
+      placeholder: "2024-01-29"
     validations:
       required: true
   - type: input
     id: named-release-without
     attributes:
       label: Earliest Open edX Named Release Without This Functionality
-      description: What is the earliest named release without this code? Named releases are generally CUT in early April and early October. Use "Quince - 2023-10", or "Redwood - 2024-04", or "S - 2024-10" as examples. Please reach out to the Build Test Release working group (#wg-build-test-release in Slack) if you're not sure.
-      placeholder: "Quince - 2023-10"
+      description: What is the earliest named release without this code? Named releases are generally CUT in early April and early October. Use "Redwood - 2024-04", or "S - 2024-10", or "T - 2025-04" as examples. Please reach out to the Build Test Release working group (#wg-build-test-release in Slack) if you're not sure.
+      placeholder: "Redwood - 2024-04"
     validations:
       required: true
   - type: textarea
@@ -72,5 +72,13 @@ body:
     attributes:
       label: Additional Info
       description: If there is any additional publicly sharable information or data from your earlier analysis, include that.
+    validations:
+      required: false
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Task List
+      description: A list of tasks needed to deprecate or remove this feature and complete the DEPR.
+      placeholder: "- [ ] Task 1 needed to deprecate or remove this feature."
     validations:
       required: false
