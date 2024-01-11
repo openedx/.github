@@ -74,3 +74,11 @@ body:
       description: If there is any additional publicly sharable information or data from your earlier analysis, include that.
     validations:
       required: false
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Task List
+      description: A list of tasks needed to deprecate or remove this feature and complete the DEPR.
+      placeholder: "- [ ] Task 1 needed to deprecate or remove this feature."
+    validations:
+      required: false
