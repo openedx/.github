@@ -28,7 +28,7 @@ body:
     id: named-release-without
     attributes:
       label: Earliest Open edX Named Release Without This Functionality
-      description: What is the earliest named release without this code? Named releases are generally CUT in early April and early October. Use "Redwood - 2024-04", or "S - 2024-10", or "T - 2025-04" as examples. Please reach out to the Build Test Release working group (#wg-build-test-release in Slack) if you're not sure.
+      description: What is the earliest named release without this code? Named releases are generally CUT in early April and early October. Use "Redwood - 2024-04", or "Sumac - 2024-10", or "Teak - 2025-04" as examples. Please reach out to the Build Test Release working group (#wg-build-test-release in Slack) if you're not sure.
       placeholder: "Redwood - 2024-04"
     validations:
       required: true
