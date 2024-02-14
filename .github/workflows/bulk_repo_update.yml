@@ -23,9 +23,10 @@ on:
         description: "Python Version"
         type: choice
         required: true
-        default: '3.8'
+        default: '3.12'
         options:
          - '3.8'
+         - '3.12'
       packages:
         description: "Space separated list of required packages"
         type: string
