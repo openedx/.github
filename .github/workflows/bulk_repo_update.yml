@@ -1,8 +1,6 @@
 name: Bulk Repo Update
 
 # This workflow is used to run a script on a list of repos and create PRs for the changes introduced by script.
-# Note that this workflow won't work on repos where active branch isn't master.
-# A new input for active branch can be added if Github allows more than 10 inputs in future.
 
 on:
   workflow_dispatch:
