@@ -1,0 +1,140 @@
+name: Bulk Repo Update
+
+# This workflow is used to run a script on a list of repos and create PRs for the changes introduced by script.
+# Note that this workflow won't work on repos where active branch isn't master.
+# A new input for active branch can be added if Github allows more than 10 inputs in future.
+
+on:
+  workflow_dispatch:
+    inputs:
+      organization:
+        description: "Github organization for the listed repos"
+        type: choice
+        required: true
+        default: openedx
+        options:
+         - openedx
+         - edx
+      repos_list:
+        description: "List of repositories in the format 'x', 'y', 'z'..."
+        type: string
+        required: true
+      python_version:
+        description: "Python Version"
+        type: choice
+        required: true
+        default: '3.8'
+        options:
+         - '3.8'
+      packages:
+        description: "Space separated list of required packages"
+        type: string
+        required: false
+        default: ''
+      commit_message:
+        description: "Commit message/ PR title"
+        type: string
+        required: true
+      pr_body:
+        description: "Additional information for PR body"
+        type: string
+        required: false
+        default: ''
+      branch:
+        description: "Branch name"
+        type: string
+        required: true
+        default: 'update-code'
+      draft:
+        description: "Create draft PR"
+        type: boolean
+        required: false
+        default: false
+      force_delete_old_prs:
+        description: "Forcefully delete old PRs"
+        type: boolean
+        required: false
+        default: false
+      script:
+        description: "Script"
+        type: string
+        required: true
+
+jobs:
+
+  repos_list:
+    runs-on: ubuntu-20.04
+
+    outputs:
+      output1: ${{ steps.repos_list.outputs.list }}
+    steps:
+
+    - name: get repos list
+      id: repos_list
+      run: |
+        echo "::set-output name=list::[${{github.event.inputs.repos_list}}]"
+
+  bulk_update:
+    runs-on: ubuntu-20.04
+    needs: [ repos_list ]
+    strategy:
+      fail-fast: false
+      matrix:
+        repos: ${{fromJson(needs.repos_list.outputs.output1)}}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+            repository: ${{ github.event.inputs.organization}}/${{ matrix.repos }}
+            token: ${{ secrets.requirements_bot_github_token }}
+            fetch-depth: 0
+
+      - name: Get Default Branch of checkedout repo
+        run: |
+          branch=$(git branch --show-current)
+          echo "BRANCH=$branch" >> $GITHUB_ENV
+
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ github.event.inputs.python_version }}
+          
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+
+      - name: install packages
+        if: ${{ github.event.inputs.packages }}
+        run: pip install ${{ github.event.inputs.packages }}
+
+      - name: run script
+        run: ${{ github.event.inputs.script }}
+
+      - name: setup testeng-ci
+        run: |
+          git clone https://github.com/edx/testeng-ci.git
+          cd $GITHUB_WORKSPACE/testeng-ci
+          pip install -r requirements/base.txt
+
+      - name: setup draft flag
+        run: echo "draftflag=$(if ${{ github.event.inputs.draft }}; then echo '--draft'; else echo ''; fi)" >> $GITHUB_ENV
+
+      - name: setup force delete flag
+        run: echo "force_delete_old_prs_flag=$(if ${{ github.event.inputs.force_delete_old_prs }}; then echo '--force-delete-old-prs'; else echo '--no-force-delete-old-prs'; fi)" >> $GITHUB_ENV
+
+      - name: ignore testeng-ci
+        run: echo "testeng-ci" >> .git/info/exclude
+
+      - name: create pull request
+        env:
+          GITHUB_TOKEN: ${{ secrets.requirements_bot_github_token }}
+          GITHUB_USER_EMAIL: ${{ secrets.requirements_bot_github_email }}
+        run: |
+          cd $GITHUB_WORKSPACE/testeng-ci
+          python -m jenkins.pull_request_creator --repo-root=$GITHUB_WORKSPACE \
+          --target-branch="${{ env.BRANCH }}" --base-branch-name="${{ github.event.inputs.branch }}" \
+          --commit-message="${{ github.event.inputs.commit_message }}" \
+          --pr-title="${{ github.event.inputs.commit_message }}"  \
+          --pr-body="${{ github.event.inputs.pr_body }}"  --user-reviewers=${{ github.actor }} \
+           ${{ env.force_delete_old_prs_flag }} ${{env.draftflag}}  --untracked-files-required=true
