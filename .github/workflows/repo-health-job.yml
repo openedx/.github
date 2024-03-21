@@ -3,7 +3,7 @@ name: Repo Health Checks
 on:
   workflow_call:
     secrets:
-      REPO_HEALTH_BOT_TOKEN: 
+      REPO_HEALTH_BOT_TOKEN:
         description: "Github token with read access to all repos and write access to the target repo"
         required: true
       REPO_HEALTH_BOT_EMAIL:
@@ -15,6 +15,15 @@ on:
       READTHEDOCS_API_KEY:
         description: "API Key for READ THE DOCS Access"
         required: true
+      EMAIL_ADDRESS_FOR_ALERTS:
+        description: "Email Address for the alerts"
+        required: false
+      SMTP_USERNAME:
+        description: "SMTP Username for sending emails"
+        required: false
+      SMTP_PASSWORD:
+        description: "SMTP Password for sending emails"
+        required: false
 
     inputs:
       DASHBOARD_NAME:
@@ -53,6 +62,14 @@ on:
         description: "Space seperated list of repos to be ignored i.e. 'repo1 repo2 . . .' "
         type: string
         default: "clamps-ghsa-c4rq-qwgr-pj5h"
+      ENABLE_EMAIL_ALERTS:
+        description: "Set this to true to enable email alerts."
+        type: boolean
+        default: false
+      ENABLE_EMAIL_ALERTS_ON_SUCCESS:
+        description: "By default, email alerts are sent on failure. Set this to true to enable email alerts on success as well."
+        type: boolean
+        default: false
 
 jobs:
   repo_health_check:
@@ -70,14 +87,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      
+
       - name: Clone edx-repo-health repo
         uses: actions/checkout@v4
         with:
           repository: openedx/edx-repo-health
           path: edx-repo-health
           ref: ${{ inputs.EDX_REPO_HEALTH_BRANCH }}
-      
+
       - name: Install pip & pip-tools
         run: |
           python3 -m pip install -r edx-repo-health/requirements/pip.txt
@@ -89,14 +106,14 @@ jobs:
           repository: openedx/testeng-ci
           path: testeng-ci
           ref: "master"
-      
+
       - name: Clone repo-tools repo
         uses: actions/checkout@v4
         with:
           repository: openedx/repo-tools
           path: repo_tools
           ref: master
-      
+
       - name: Clone repo-health-data repo
         uses: actions/checkout@v4
         with:
@@ -137,10 +154,36 @@ jobs:
         if: ${{ inputs.DASHBOARD_NAME == 'repo_health' }}
         run: |
           bash edx-repo-health/scripts/repo-health-artifact.sh
-        
+
       - name: Upload sqlite db as artifact
         if: ${{ inputs.DASHBOARD_NAME == 'repo_health' }}
         uses: actions/upload-artifact@v4
         with:
           name: sqlite db artifact
           path: dashboards/dashboard.sqlite3
+
+      - name: Send email on failure
+        uses: dawidd6/action-send-mail@v3
+        if: ${{ failure() && inputs.ENABLE_EMAIL_ALERTS }}
+        with:
+          server_address: email-smtp.us-east-1.amazonaws.com
+          server_port: 465
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: ${{ github.workflow }} failed in ${{ github.repository }}
+          to: ${{ secrets.EMAIL_ADDRESS_FOR_ALERTS }}
+          from: github-actions <github-actions@edx.org>
+          body: ${{ github.workflow }} in ${{ github.repository }} failed! For details, see https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Send email on success
+        uses: dawidd6/action-send-mail@v3
+        if: ${{ success() && inputs.ENABLE_EMAIL_ALERTS && inputs.ENABLE_EMAIL_ALERTS_ON_SUCCESS }}
+        with:
+          server_address: email-smtp.us-east-1.amazonaws.com
+          server_port: 465
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: ${{ github.workflow }} succeeded in ${{ github.repository }}
+          to: ${{ secrets.EMAIL_ADDRESS_FOR_ALERTS }}
+          from: github-actions <github-actions@edx.org>
+          body: ${{ github.workflow }} in ${{ github.repository }} succeeded! For details, see https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
