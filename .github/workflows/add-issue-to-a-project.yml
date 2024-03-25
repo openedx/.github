@@ -35,7 +35,7 @@ jobs:
           private_key: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
 
       - name: "Add to project"
-        uses: actions/add-to-project@v0.6.0
+        uses: actions/add-to-project@v0.6.1
         with:
           project-url: https://github.com/orgs/${{ inputs.ORGANIZATION }}/projects/${{ inputs.PROJECT_NUMBER }}
           github-token: ${{ steps.generate_token.outputs.token }}
