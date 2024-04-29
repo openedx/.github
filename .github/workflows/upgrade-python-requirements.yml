@@ -62,7 +62,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python_version }}
-      
+      # With the updated package lxml>5.0, now the system dev packages are necessary 
+      # to run pip-compile. Without installing dev packages libxml2-dev and libxslt-dev, 
+      # the requirements upgrade job fails
       - name: setup dev for lxml dependency
         run: |
           sudo apt-get update && sudo apt-get install -y libxml2-dev libxslt-dev
