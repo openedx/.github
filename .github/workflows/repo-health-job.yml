@@ -3,7 +3,7 @@ name: Repo Health Checks
 on:
   workflow_call:
     secrets:
-      REPO_HEALTH_BOT_TOKEN: 
+      REPO_HEALTH_BOT_TOKEN:
         description: "Github token with read access to all repos and write access to the target repo"
         required: true
       REPO_HEALTH_BOT_EMAIL:
@@ -60,7 +60,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.8"]
+        python-version: ["3.11"]
 
     steps:
       - name: Checkout Repo
@@ -70,14 +70,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      
+
       - name: Clone edx-repo-health repo
         uses: actions/checkout@v4
         with:
           repository: openedx/edx-repo-health
           path: edx-repo-health
           ref: ${{ inputs.EDX_REPO_HEALTH_BRANCH }}
-      
+
       - name: Install pip & pip-tools
         run: |
           python3 -m pip install -r edx-repo-health/requirements/pip.txt
@@ -89,14 +89,14 @@ jobs:
           repository: openedx/testeng-ci
           path: testeng-ci
           ref: "master"
-      
+
       - name: Clone repo-tools repo
         uses: actions/checkout@v4
         with:
           repository: openedx/repo-tools
           path: repo_tools
           ref: master
-      
+
       - name: Clone repo-health-data repo
         uses: actions/checkout@v4
         with:
@@ -137,7 +137,7 @@ jobs:
         if: ${{ inputs.DASHBOARD_NAME == 'repo_health' }}
         run: |
           bash edx-repo-health/scripts/repo-health-artifact.sh
-        
+
       - name: Upload sqlite db as artifact
         if: ${{ inputs.DASHBOARD_NAME == 'repo_health' }}
         uses: actions/upload-artifact@v4
