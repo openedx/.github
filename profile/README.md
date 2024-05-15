@@ -7,7 +7,7 @@ If you're trying to learn more, check out...
 
 * the homepage: [openedx.org](https://openedx.org),
 * the discussion forums: [discuss.openedx.org](https://discuss.openedx.org/),
-* the main LMS and CMS application repository: [edx-platform](https://github.com/edx/edx-platform),
+* the main repository, containing the Learning Management System (LMS) and Content Managament Studio (CMS): [edx-platform](https://github.com/openedx/edx-platform),
 * the community-supported installation method (also a development tool!): [tutor](https://docs.tutor.overhang.io/).
 
 Although Open edX software is built by many developers across different organizations,
