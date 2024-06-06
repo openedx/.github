@@ -76,9 +76,7 @@ jobs:
 
       - name: setup pull_request_creator
         run: |
-          git clone https://github.com/openedx/repo-tools
-          cd $GITHUB_WORKSPACE/repo-tools
-          pip install -e '.[pull_request_creator]'
+          pip install 'edx-repo-tools[pull_request_creator]'
 
       - name: create pull request
         id: createpullrequest
