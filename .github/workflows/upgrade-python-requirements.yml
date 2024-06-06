@@ -89,7 +89,6 @@ jobs:
           USER_REVIEWERS: ${{ inputs.user_reviewers }}
           TEAM_REVIEWERS: ${{ inputs.team_reviewers }}
         run: |
-          cd $GITHUB_WORKSPACE/repo-tools
           pull_request_creator --repo-root=$GITHUB_WORKSPACE \
           --target-branch="$TARGET_BRANCH" --base-branch-name="upgrade-python-requirements" \
           --commit-message="chore: Upgrade Python requirements" \

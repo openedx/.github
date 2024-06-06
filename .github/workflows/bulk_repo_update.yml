@@ -112,9 +112,7 @@ jobs:
 
       - name: setup pull_request_creator
         run: |
-          git clone https://github.com/openedx/repo-tools.git
-          cd $GITHUB_WORKSPACE/repo-tools
-          pip install -e '.[pull_request_creator]'
+          pip install 'edx-repo-tools[pull_request_creator]'
 
       - name: setup draft flag
         run: echo "draftflag=$(if ${{ github.event.inputs.draft }}; then echo '--draft'; else echo ''; fi)" >> $GITHUB_ENV
@@ -130,7 +128,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.requirements_bot_github_token }}
           GITHUB_USER_EMAIL: ${{ secrets.requirements_bot_github_email }}
         run: |
-          cd $GITHUB_WORKSPACE/repo-tools
           pull_request_creator --repo-root=$GITHUB_WORKSPACE \
           --target-branch="${{ env.BRANCH }}" --base-branch-name="${{ github.event.inputs.branch }}" \
           --commit-message="${{ github.event.inputs.commit_message }}" \
