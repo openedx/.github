@@ -74,11 +74,10 @@ jobs:
           cd $GITHUB_WORKSPACE
           make upgrade
 
-      - name: setup testeng-ci
+      - name: setup pull_request_creator
         run: |
-          git clone https://github.com/edx/testeng-ci.git
-          cd $GITHUB_WORKSPACE/testeng-ci
-          pip install -r requirements/base.txt
+          pip install 'edx-repo-tools[pull_request_creator]'
+
       - name: create pull request
         id: createpullrequest
         env:
@@ -88,10 +87,10 @@ jobs:
           USER_REVIEWERS: ${{ inputs.user_reviewers }}
           TEAM_REVIEWERS: ${{ inputs.team_reviewers }}
         run: |
-          cd $GITHUB_WORKSPACE/testeng-ci
-          python -m jenkins.pull_request_creator --repo-root=$GITHUB_WORKSPACE \
+          pull_request_creator --repo-root=$GITHUB_WORKSPACE \
           --target-branch="$TARGET_BRANCH" --base-branch-name="upgrade-python-requirements" \
-          --commit-message="chore: Updating Python Requirements" --pr-title="Python Requirements Update" \
+          --commit-message="chore: Upgrade Python requirements" \
+          --pr-title="chore: Upgrade Python requirements" \
           --pr-body="Python requirements update. Please review the [changelogs](https://openedx.atlassian.net/wiki/spaces/TE/pages/1001521320/Python+Package+Changelogs) for the upgraded packages." \
           --user-reviewers="$USER_REVIEWERS" \
           --team-reviewers="$TEAM_REVIEWERS" \
