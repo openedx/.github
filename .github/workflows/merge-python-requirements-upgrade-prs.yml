@@ -1,11 +1,11 @@
-# This file contains a workflow which will be run on schedule every day, 
+# This file contains a workflow which will be run on schedule every day,
 # or can be call from other workflows and
-# will collect all the eligible (PRs which are labelled "Ready to merge" by our 
+# will collect all the eligible (PRs which are labelled "Ready to merge" by our
 # script) python upgrade PRs from openedx or edx org.
 # After fetching all PRs, it will check if all the checks passing on the PR, if yes
 # then it will merge that PR, otherwise it will fail.
 # Note:
-# When workflow triggered from this repo(under openedx) will merge only openedx PRs 
+# When workflow triggered from this repo(under openedx) will merge only openedx PRs
 # and will merge edx orgs' PRs only when it will be called from the edx/.github repo
 
 name: Merge Python Requirements Upgrade PRs
@@ -13,7 +13,7 @@ name: Merge Python Requirements Upgrade PRs
 on:
   workflow_call:
     secrets:
-      REQUIREMENTS_BOT_GITHUB_TOKEN: 
+      REQUIREMENTS_BOT_GITHUB_TOKEN:
         description: "Github token with read/write access used to merge PRs"
         required: true
     inputs:
@@ -37,7 +37,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.8'
+          python-version: '3.11'
 
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -59,7 +59,7 @@ jobs:
         id: generate_urls
         run: |
           echo "urls=$(python scripts/get_ready_to_merge_prs.py ${{ inputs.ORG_NAME || 'openedx' }})" >> $GITHUB_OUTPUT
-          
+
 
   merge_pr:
     runs-on: ubuntu-20.04
@@ -75,7 +75,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.8'
+          python-version: '3.11'
 
       - name: Checkout tools repo
         uses: actions/checkout@v4
