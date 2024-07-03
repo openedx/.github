@@ -71,7 +71,7 @@ jobs:
     - name: get repos list
       id: repos_list
       run: |
-        echo "::set-output name=list::[${{github.event.inputs.repos_list}}]"
+        echo "list=[${{github.event.inputs.repos_list}}]" >> $GITHUB_OUTPUT
 
   bulk_update:
     runs-on: ubuntu-20.04

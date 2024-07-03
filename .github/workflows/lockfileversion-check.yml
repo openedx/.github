@@ -19,7 +19,7 @@ jobs:
     - name: Retrieve version
       id: getversion
       run: |
-        echo "::set-output name=version::$(cat package-lock.json | grep '\"lockfileVersion\": 2,')"
+        echo "version=$(cat package-lock.json | grep '\"lockfileVersion\": 2,')" >> $GITHUB_OUTPUT
 
     - name: check value
       if: ${{ steps.getversion.outputs.version == null }}
