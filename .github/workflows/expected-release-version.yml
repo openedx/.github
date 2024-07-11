@@ -50,7 +50,11 @@ jobs:
         run: |
           echo ${{ steps.get-latest-tag.outputs.tag }}
           IFS='v' read -r -a VERSION <<< "${{ steps.get-latest-tag.outputs.tag }}"
-          IFS='.' read -r -a VERSION_PARTS <<< "${VERSION[1]}"
+          if [ VERSION[1] == null ]: then
+            IFS='.' read -r -a VERSION_PARTS <<< "${VERSION[0]}"
+          elif [ VERSION[1] != null ]: then
+            IFS='.' read -r -a VERSION_PARTS <<< "${VERSION[1]}"
+          fi
           MAJOR=${VERSION_PARTS[0]}
           MINOR=${VERSION_PARTS[1]}
           PATCH=${VERSION_PARTS[2]}
