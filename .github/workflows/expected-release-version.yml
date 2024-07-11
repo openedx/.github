@@ -12,9 +12,7 @@ jobs:
       release_level: ${{ steps.release_type.outputs.RELEASE_TYPE }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ env.GITHUB_SHA }}
+        uses: actions/checkout@v4
       - name: Get Commit Messages
         id: get_commit_messages
         run: |
@@ -43,9 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ env.GITHUB_SHA }}
+        uses: actions/checkout@v4
       - name: Get latest tag
         uses: actions-ecosystem/action-get-latest-tag@v1
         id: get-latest-tag
@@ -76,14 +72,14 @@ jobs:
         id: list-comments
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
-          COMMENTS=$(curl -s -H "Accept: application/vnd.github.v3+json" \
+          COMMENTS=$(curl -s -H "Accept: application/vnd.github+json" \
                         -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
                         "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments")
           echo "$COMMENTS" > comments.json
 
       - name: Identify and delete previous comment
         run: |
-          COMMENT_IDS=$(jq -r '.[] | select(.user.login=="github-actions[bot]") | .id' comments.json)
+          COMMENT_IDS=$(jq -r '.[] | select(.body=="Merging this PR will generate the new tag version ${{ steps.get-latest-tag.outputs.tag }}") | .id' comments.json)
           for COMMENT_ID in $COMMENT_IDS; do
             echo "Deleting comment ID $COMMENT_ID"
             curl -s -X DELETE -H "Accept: application/vnd.github.v3+json" \
@@ -91,12 +87,12 @@ jobs:
                 "https://api.github.com/repos/${{ github.repository }}/issues/comments/$COMMENT_ID"
           done
       - name: Script to comment on PR
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7.0.1
         with:
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '🎉 This PR is included in version ${{ steps.next_version.outputs.NEXT_TAG }} 🎉 '
+              body: 'Merging this PR will generate the new tag version ${{ steps.next_version.outputs.NEXT_TAG }}'
             })
