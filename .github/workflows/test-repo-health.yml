@@ -79,7 +79,8 @@ jobs:
         with:
           repository: huniafatima-arbi/edx-repo-health
           path: huniafatima-arbi/edx-repo-health
-          ref: ${{ inputs.EDX_REPO_HEALTH_BRANCH }}
+          ref: huniafatima/pinned-python-dependency-count
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
       
       - name: Install pip & pip-tools
         run: |
