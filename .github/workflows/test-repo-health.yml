@@ -83,8 +83,8 @@ jobs:
       
       - name: Install pip & pip-tools
         run: |
-          python3 -m pip install -r edx-repo-health/requirements/pip.txt
-          python3 -m pip install -r edx-repo-health/requirements/pip-tools.txt
+          python3 -m pip install -r huniafatima-arbi/edx-repo-health/requirements/pip.txt
+          python3 -m pip install -r huniafatima-arbi/edx-repo-health/requirements/pip-tools.txt
 
       - name: Clone testeng-ci repo
         uses: actions/checkout@v4
