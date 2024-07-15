@@ -1,4 +1,4 @@
-name: Repo Health Checks
+name: Test Repo Health Checks
 
 on:
   pull_request:
@@ -51,7 +51,7 @@ on:
       TARGET_REPO_TO_STORE_REPORTS:
         description: "Target repo to store the csv reports & results i.e. org/repo-name"
         type: string
-        default: "edx/repo-health-data@huniafatima/test-branch"
+        default: "edx/repo-health-data"
       REPOS_TO_IGNORE:
         description: "Space seperated list of repos to be ignored i.e. 'repo1 repo2 . . .' "
         type: string
@@ -105,8 +105,7 @@ jobs:
         with:
           repository: ${{ inputs.TARGET_REPO_TO_STORE_REPORTS }}
           path: repo-health-data
-          ref: master
-          token: ${{ secrets.REPO_HEALTH_BOT_TOKEN}}
+          ref: huniafatima/test-branch
 
       - name: Run repo health org script
         if: ${{ inputs.DASHBOARD_NAME == 'repo_health' }}
