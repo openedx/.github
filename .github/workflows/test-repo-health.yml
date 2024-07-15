@@ -120,11 +120,11 @@ jobs:
           REPO_HEALTH_REPOS_WORKSHEET_ID: ${{ inputs.REPO_HEALTH_REPOS_WORKSHEET_ID }}
           REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL: ${{ inputs.REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL }}
         run: |
-          bash https://github.com/huniafatima-arbi/edx-repo-health/blob/huniafatima/pinned-python-dependency-count/scripts/repo-health-script.sh
+          bash huniafatima-arbi/edx-repo-health/blob/huniafatima/pinned-python-dependency-count/scripts/repo-health-script.sh
 
       - name: Run repo health artifact script
         run: |
-          bash https://github.com/huniafatima-arbi/edx-repo-health/blob/huniafatima/pinned-python-dependency-count/scripts/repo-health-artifact.sh
+          bash huniafatima-arbi/edx-repo-health/blob/huniafatima/pinned-python-dependency-count/scripts/repo-health-artifact.sh
         
       - name: Upload sqlite db as artifact
         uses: actions/upload-artifact@v4
