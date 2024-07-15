@@ -77,8 +77,8 @@ jobs:
       - name: Clone edx-repo-health repo
         uses: actions/checkout@v4
         with:
-          repository: openedx/edx-repo-health
-          path: edx-repo-health
+          repository: huniafatima-arbi/edx-repo-health
+          path: huniafatima-arbi/edx-repo-health
           ref: ${{ inputs.EDX_REPO_HEALTH_BRANCH }}
       
       - name: Install pip & pip-tools
@@ -124,7 +124,7 @@ jobs:
 
       - name: Run repo health artifact script
         run: |
-          bash edx-repo-health/scripts/repo-health-artifact.sh
+          bash https://github.com/huniafatima-arbi/edx-repo-health/blob/huniafatima/pinned-python-dependency-count/scripts/repo-health-artifact.sh
         
       - name: Upload sqlite db as artifact
         uses: actions/upload-artifact@v4
