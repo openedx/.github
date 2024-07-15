@@ -120,7 +120,7 @@ jobs:
           REPO_HEALTH_REPOS_WORKSHEET_ID: ${{ inputs.REPO_HEALTH_REPOS_WORKSHEET_ID }}
           REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL: ${{ inputs.REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL }}
         run: |
-          bash huniafatima-arbi/edx-repo-health/scripts/repo-health-script.sh
+          bash https://github.com/huniafatima-arbi/edx-repo-health/blob/huniafatima/pinned-python-dependency-count/scripts/repo-health-script.sh
 
       - name: Run repo health artifact script
         run: |
