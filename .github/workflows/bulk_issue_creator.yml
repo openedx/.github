@@ -1,0 +1,91 @@
+name: Bulk Repo Issue Creation
+
+on:
+    workflow_dispatch:
+        inputs:
+            organization:
+                description: "Github organization for the listed repos"
+                type: choice
+                required: true
+                default: openedx
+                options:
+                    - openedx
+                    - edx
+            repos_list:
+                description: "List of repositories in the format 'x', 'y', 'z'..."
+                type: string
+                required: true
+            issue_title:
+                description: "Issue title"
+                type: string
+                required: true
+            issue_description:
+                description: "Issue description"
+                type: string
+                required: true
+            summary_repo:
+                description: "Repository where the summary issue will be created"
+                type: string
+                required: true
+            summary_issue_title:
+                description: "Title for the summary issue"
+                type: string
+                required: true
+            summary_issue_body:
+                description: "Body for the summary issue"
+                type: string
+                required: true
+
+jobs:
+    repos_list:
+        runs-on: ubuntu-20.04
+        outputs:
+            output1: ${{ steps.repos_list.outputs.list }}
+        steps:
+            - name: get repos list
+              id: repos_list
+              run: |
+                  echo "list=[${{github.event.inputs.repos_list}}]" >> $GITHUB_OUTPUT
+
+    bulk_issue_creation:
+        runs-on: ubuntu-20.04
+        needs: [repos_list]
+        strategy:
+            fail-fast: false
+            matrix:
+                repos: ${{fromJson(needs.repos_list.outputs.output1)}}
+
+        steps:
+            - name: Create Issue in ${{ matrix.repos }}
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  repo_name=${{ matrix.repos }}
+                  issue_title="[${repo_name}] ${{ github.event.inputs.issue_title }}"
+                  issue_body="${{ github.event.inputs.issue_description }}"
+                  issue_url=$(curl -s -X POST \
+                    -H "Authorization: token $GITHUB_TOKEN" \
+                    -H "Accept: application/vnd.github.v3+json" \
+                    https://api.github.com/repos/${{ github.event.inputs.organization }}/${repo_name}/issues \
+                    -d "{\"title\":\"$issue_title\", \"body\":\"$issue_body\"}" \
+                    | jq -r '.html_url')
+                  echo "- [ ] [$repo_name]($issue_url)" >> issues.md
+              shell: bash
+
+    summary_issue_creation:
+        runs-on: ubuntu-20.04
+        needs: [bulk_issue_creation]
+
+        steps:
+            - name: Create Summary Issue
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  summary_title="${{ github.event.inputs.summary_issue_title }}"
+                  summary_body="${{ github.event.inputs.summary_issue_body }}\n\n$(cat issues.md)"
+                  curl -s -X POST \
+                    -H "Authorization: token $GITHUB_TOKEN" \
+                    -H "Accept: application/vnd.github.v3+json" \
+                    https://api.github.com/repos/${{ github.event.inputs.organization }}/${{ github.event.inputs.summary_repo }}/issues \
+                    -d "{\"title\":\"$summary_title\", \"body\":\"$summary_body\"}"
+              shell: bash
