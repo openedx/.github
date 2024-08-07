@@ -1,0 +1,58 @@
+# Check package-lock file version and mismatch issues
+
+# This is a workflow to verify the use of NPM 10, lockfileVersion 3
+# and also detects mismatch between pacakge.json and package-lock.json.
+# This workflow intends to phase out the older workflow checking for lockfileVersion 2 & 3.
+
+name: lockfile check for Node v20
+
+on:
+  workflow_call:
+
+jobs:
+  version-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read Node.js version from .nvmrc
+        id: read-nvmrc
+        run: |
+          if [ -f .nvmrc ]; then
+            NODE_VERSION=$(cat .nvmrc)
+            if [[ "$NODE_VERSION" != 20* ]]; then
+              echo "ERROR: Node.js version 20 or above is required. Found version $NODE_VERSION in .nvmrc"
+              exit 1
+            fi
+            echo "node-version=$NODE_VERSION" >> $GITHUB_ENV
+          else
+            echo "No .nvmrc file found, defaulting to Node.js v20"
+            echo "node-version=20" >> $GITHUB_ENV
+          fi
+
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Retrieve lockfile version
+        id: getversion
+        run: |
+          echo "VERSION=$(cat package-lock.json | grep '\"lockfileVersion\": 3,')" >> $GITHUB_ENV
+
+      - name: Check lockfile version
+        if: ${{ env.VERSION == null }}
+        run: |
+          echo "ERROR: Outdated package-lock file. Use NPM10 to install dependencies."
+          exit 1
+
+      - name: Check sync
+        run: |
+          problems=$(npm ls --all --package-lock-only --json | jq '.problems[]?' -r)
+          if [[ -n "$problems" ]]; then
+            echo "$problems"
+            echo
+            echo "Mismatch between package.json and package-lock.json. Please regenerate package lock file with 'npm install'."
+            exit 1
+          fi
