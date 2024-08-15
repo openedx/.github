@@ -1,0 +1,142 @@
+name: Bulk Issues Creation
+
+on:
+  workflow_dispatch:
+    inputs:
+      organization:
+        description: "Github organization for the listed repos"
+        type: choice
+        required: true
+        default: openedx
+        options:
+          - openedx
+          - edx
+      repos_list:
+        description: "List of repositories in the format 'x', 'y', 'z'..."
+        type: string
+        required: true
+      issue_title:
+        description: "Issue title"
+        type: string
+        required: true
+      issue_description:
+        description: "Issue description"
+        type: string
+        required: true
+      issue_tags:
+        description: "List of tags in the format 'x', 'y', 'z'..."
+        type: string
+        required: false
+
+jobs:
+
+  prepare_repos_list:
+    runs-on: ubuntu-20.04
+    outputs:
+      repos_list: ${{ steps.repos_list.outputs.list }}
+    steps:
+      - name: Get repos list
+        id: repos_list
+        run: |
+          echo "list=[${{github.event.inputs.repos_list}}]" >> $GITHUB_OUTPUT
+
+  create_issue_list_files:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Create issue list files
+        run: |
+          # Add headers in the files
+          echo "Organization, Repository, Issue Url" > issue_list.csv
+          echo "---------------------------------------------------------------------" > issue_list.txt
+          echo "List of issues created in the relevant repos." >> issue_list.txt
+          echo "Output is in the tasks list format to directly copy them in git epic " >> issue_list.txt
+          echo "---------------------------------------------------------------------" >> issue_list.txt
+          echo "\`\`\`[tasklist]" >> issue_list.txt
+          echo "### Tasks" >> issue_list.txt
+        shell: bash
+
+      - name: Upload issue list files as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: issues-artifact
+          path: issue_list.*
+
+  bulk_issue_creation:
+    runs-on: ubuntu-20.04
+    needs: [ prepare_repos_list, create_issue_list_files ]
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        repo: ${{fromJson(needs.prepare_repos_list.outputs.repos_list)}}
+
+    steps:
+      - name: Download issues-artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: issues-artifact
+      - name: Create Issue in ${{ matrix.repo }}
+        run: |
+          issue_title="${{ github.event.inputs.issue_title }}"
+          issue_body="${{ github.event.inputs.issue_description }}"
+          labels=${{ github.event.inputs.issue_tags }}
+          labels_array=$(echo $labels | jq -R 'split(",")')
+
+          # Curl api call to create issue
+          response=$(curl -s -X POST \
+          -H "Authorization: token ${{ secrets.REQUIREMENTS_BOT_GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github+json" \
+          https://api.github.com/repos/${{ github.event.inputs.organization }}/${{ matrix.repo }}/issues \
+          -d "{
+          \"title\": \"$issue_title\",
+          \"body\": \"$issue_body\",
+          \"labels\": $labels_array
+          }")
+
+          echo "Issue creation API response:"
+          echo "$response" | jq .  # Pretty print the response
+
+          # Check if response contains html_url
+          issue_url=$(echo "$response" | jq -r '.html_url')
+          if [ "$issue_url" == "null" ]; then
+          echo "Error: 'html_url' field not found in response"
+          exit 1
+          fi
+
+          echo "Issue url: $issue_url"
+          # Append the issue to the issue list files
+          echo "${{ github.event.inputs.organization }}, ${{ matrix.repo }}, $issue_url" >> issue_list.csv
+          echo "- [ ] ${{ matrix.repo }} $issue_url" >> issue_list.txt
+
+      - name: Upload updated issue list files
+        uses: actions/upload-artifact@v3
+        with:
+          name: issues-artifact
+          path: issue_list.*
+
+  finalize_issues_list:
+    runs-on: ubuntu-20.04
+    needs: [ bulk_issue_creation ]
+    steps:
+      - name: Download issues-artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: issues-artifact
+
+      - name: Print list of created issues on console
+        run: |
+          # Add ending tag in the file
+          echo '```' >> issue_list.txt
+          cat issue_list.csv
+        shell: bash
+
+      - name: Upload final issues list file
+        uses: actions/upload-artifact@v3
+        with:
+          name: issues-artifact
+          path: issue_list.*
+
+      - name: How to download Artifact (Issues list files)
+        run: |
+          echo "To download the artifact find 'Artifacts' secion on the summary page of the run:"
+          echo "Summary page: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
