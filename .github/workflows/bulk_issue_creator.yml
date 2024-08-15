@@ -16,15 +16,15 @@ on:
         type: string
         required: true
       issue_title:
-        description: "Issue title"
+        description: 'Issue title. WARNING: Replace all backticks (`) with escaped backticks (\`)'
         type: string
         required: true
       issue_description:
-        description: "Issue description"
+        description: 'Issue description. WARNING: Replace all backticks (`) with escaped backticks (\`)'
         type: string
         required: true
-      issue_tags:
-        description: "List of tags in the format 'x', 'y', 'z'..."
+      issue_labels:
+        description: "List of labels in the format 'x', 'y', 'z'..."
         type: string
         required: false
 
@@ -79,19 +79,18 @@ jobs:
         run: |
           issue_title="${{ github.event.inputs.issue_title }}"
           issue_body="${{ github.event.inputs.issue_description }}"
-          labels=${{ github.event.inputs.issue_tags }}
-          labels_array=$(echo $labels | jq -R 'split(",")')
+          labels_string=["${{ github.event.inputs.issue_labels }}"]
+          labels_array=$(echo "$labels_string" | sed "s/'/\"/g" | jq -c .)
+
+          data="{ \"title\": \"$issue_title\", \"body\": \"$issue_body\", \"labels\": $labels_array }"
+          echo "data: $data"
 
           # Curl api call to create issue
           response=$(curl -s -X POST \
           -H "Authorization: token ${{ secrets.REQUIREMENTS_BOT_GITHUB_TOKEN }}" \
           -H "Accept: application/vnd.github+json" \
           https://api.github.com/repos/${{ github.event.inputs.organization }}/${{ matrix.repo }}/issues \
-          -d "{
-          \"title\": \"$issue_title\",
-          \"body\": \"$issue_body\",
-          \"labels\": $labels_array
-          }")
+          -d "$data")
 
           echo "Issue creation API response:"
           echo "$response" | jq .  # Pretty print the response
@@ -99,8 +98,8 @@ jobs:
           # Check if response contains html_url
           issue_url=$(echo "$response" | jq -r '.html_url')
           if [ "$issue_url" == "null" ]; then
-          echo "Error: 'html_url' field not found in response"
-          exit 1
+            echo "Error: 'html_url' field not found in response"
+            exit 1
           fi
 
           echo "Issue url: $issue_url"
