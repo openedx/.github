@@ -7,19 +7,14 @@ on:
         description: "Github organization for the listed repos"
         type: choice
         required: true
-        default: farhan-test-org
+        default: openedx
         options:
           - openedx
           - edx
-          - farhan-test-org
       repos_list:
         description: "List of repositories in the format 'x', 'y', 'z'..."
         type: string
         required: true
-      issue_labels:
-        description: "List of labels in the format 'x', 'y', 'z'..."
-        type: string
-        required: false
 
 jobs:
 
@@ -39,7 +34,7 @@ jobs:
       - name: Create issue list files
         run: |
           # Add headers in the files
-          echo "Organization, Repository, Issue Url" > issue_list.csv
+          echo "Organization, Repository, Issue Created, Issue Url" > issue_list.csv
           echo "---------------------------------------------------------------------" > issue_list.txt
           echo "List of issues created in the relevant repos." >> issue_list.txt
           echo "Output is in the tasks list format to directly copy them in git epic " >> issue_list.txt
@@ -56,32 +51,6 @@ jobs:
           path: issue_list.*
 
   bulk_issue_creation:
-    env:
-      ISSUE_TITLE_VAR: |
-        Move on from deprecated `pkg_resources` api
-      ISSUE_DESCRIPTION_VAR: |
-        Shift the code from `pkg_resources` to `importlib.resources` api
-
-        Migration guide: https://importlib-resources.readthedocs.io/en/latest/migration.html
-        Decision making story: https://github.com/openedx/XBlock/issues/676
-        Reference PR to take learning from: https://github.com/openedx/xblock-sdk/pull/350/files
-
-        **Prerequisites:**
-        - Support of python 3.8 should be dropped. [Relevant epic](https://github.com/openedx/public-engineering/issues/274)
-
-        **Acceptance Criteria:**
-        - Make sure the repository is using xblock version 5.0.0 or above. Upgrade the version if required, preferably via the make upgrade command.
-        - There should be no usage of `pkg_resources` in the repository
-        - Test cases should be passed
-        - XBlock should perform all of its functionality related to change (loading resources)
-
-        ```[tasklist]
-        ### Tasks
-        - [x] xblock https://github.com/openedx/XBlock/issues/676
-        - [x] feedback-xblock https://github.com/openedx/FeedbackXBlock/pull/58
-        - [ ] xblock-sdk https://github.com/openedx/xblock-sdk/pull/350
-        ```
-
     runs-on: ubuntu-20.04
     needs: [ prepare_repos_list, create_issue_list_files ]
     strategy:
@@ -91,22 +60,17 @@ jobs:
         repo: ${{fromJson(needs.prepare_repos_list.outputs.repos_list)}}
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Download issues-artifact
         uses: actions/download-artifact@v3
         with:
           name: issues-artifact
+
       - name: Create Issue in ${{ matrix.repo }}
         run: |
-          issue_title=$(printf "%s" "$ISSUE_TITLE_VAR")
-          issue_body=$(printf "%s" "$ISSUE_DESCRIPTION_VAR")
-          labels_string=["${{ github.event.inputs.issue_labels }}"]
-          labels_array=$(echo "$labels_string" | sed "s/'/\"/g" | jq -c .)
-
-          data=$(jq -n \
-            --arg title "$issue_title" \
-            --arg body "$issue_body" \
-            --argjson labels "$labels_array" \
-            '{ title: $title, body: $body, labels: $labels }')
+          data=$(cat '.github/workflows/bulk_issue_creator.json')
           echo "data: $data"
 
           # Curl api call to create issue
@@ -123,16 +87,18 @@ jobs:
           issue_url=$(echo "$response" | jq -r '.html_url')
           if [ "$issue_url" == "null" ]; then
             echo "Error: 'html_url' field not found in response"
+            echo "${{ github.event.inputs.organization }}, ${{ matrix.repo }}, No, " >> issue_list.csv
             exit 1
           fi
 
           echo "Issue url: $issue_url"
           # Append the issue to the issue list files
-          echo "${{ github.event.inputs.organization }}, ${{ matrix.repo }}, $issue_url" >> issue_list.csv
+          echo "${{ github.event.inputs.organization }}, ${{ matrix.repo }}, Yes, $issue_url" >> issue_list.csv
           echo "- [ ] ${{ matrix.repo }} $issue_url" >> issue_list.txt
 
       - name: Upload updated issue list files
         uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: issues-artifact
           path: issue_list.*
@@ -140,6 +106,7 @@ jobs:
   finalize_issues_list:
     runs-on: ubuntu-20.04
     needs: [ bulk_issue_creation ]
+    if: always()
     steps:
       - name: Download issues-artifact
         uses: actions/download-artifact@v3
@@ -161,5 +128,5 @@ jobs:
 
       - name: How to download Artifact (Issues list files)
         run: |
-          echo "To download the artifact find 'Artifacts' secion on the summary page of the run:"
+          echo "To download the artifact find 'Artifacts' section on the summary page of the run:"
           echo "Summary page: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
