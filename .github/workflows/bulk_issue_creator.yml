@@ -7,20 +7,13 @@ on:
         description: "Github organization for the listed repos"
         type: choice
         required: true
-        default: openedx
+        default: farhan-test-org
         options:
           - openedx
           - edx
+          - farhan-test-org
       repos_list:
         description: "List of repositories in the format 'x', 'y', 'z'..."
-        type: string
-        required: true
-      issue_title:
-        description: 'Issue title. WARNING: Replace all backticks (`) with escaped backticks (\`)'
-        type: string
-        required: true
-      issue_description:
-        description: 'Issue description. WARNING: Replace all backticks (`) with escaped backticks (\`)'
         type: string
         required: true
       issue_labels:
@@ -62,6 +55,32 @@ jobs:
           path: issue_list.*
 
   bulk_issue_creation:
+    env:
+      ISSUE_TITLE_VAR: |
+        Move on from deprecated `pkg_resources` api
+      ISSUE_DESCRIPTION_VAR: |
+        Shift the code from `pkg_resources` to `importlib.resources` api
+
+        Migration guide: https://importlib-resources.readthedocs.io/en/latest/migration.html
+        Decision making story: https://github.com/openedx/XBlock/issues/676
+        Reference PR to take learning from: https://github.com/openedx/xblock-sdk/pull/350/files
+
+        **Prerequisites:**
+        - Support of python 3.8 should be dropped. [Relevant epic](https://github.com/openedx/public-engineering/issues/274)
+
+        **Acceptance Criteria:**
+        - Make sure the repository is using xblock version 5.0.0 or above. Upgrade the version if required, preferably via the make upgrade command.
+        - There should be no usage of `pkg_resources` in the repository
+        - Test cases should be passed
+        - XBlock should perform all of its functionality related to change (loading resources)
+
+        ```[tasklist]
+        ### Tasks
+        - [x] xblock https://github.com/openedx/XBlock/issues/676
+        - [x] feedback-xblock https://github.com/openedx/FeedbackXBlock/pull/58
+        - [ ] xblock-sdk https://github.com/openedx/xblock-sdk/pull/350
+        ```
+
     runs-on: ubuntu-20.04
     needs: [ prepare_repos_list, create_issue_list_files ]
     strategy:
@@ -77,12 +96,16 @@ jobs:
           name: issues-artifact
       - name: Create Issue in ${{ matrix.repo }}
         run: |
-          issue_title="${{ github.event.inputs.issue_title }}"
-          issue_body="${{ github.event.inputs.issue_description }}"
+          issue_title=$(printf "%s" "$ISSUE_TITLE_VAR")
+          issue_body=$(printf "%s" "$ISSUE_DESCRIPTION_VAR")
           labels_string=["${{ github.event.inputs.issue_labels }}"]
           labels_array=$(echo "$labels_string" | sed "s/'/\"/g" | jq -c .)
 
-          data="{ \"title\": \"$issue_title\", \"body\": \"$issue_body\", \"labels\": $labels_array }"
+          data=$(jq -n \
+            --arg title "$issue_title" \
+            --arg body "$issue_body" \
+            --argjson labels "$labels_array" \
+            '{ title: $title, body: $body, labels: $labels }')
           echo "data: $data"
 
           # Curl api call to create issue
