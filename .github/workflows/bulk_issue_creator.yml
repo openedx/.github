@@ -38,7 +38,7 @@ jobs:
           echo "---------------------------------------------------------------------" > issue_list.txt
           echo "List of issues created in the relevant repos." >> issue_list.txt
           echo "Output is in the tasks list format to directly copy them in git epic " >> issue_list.txt
-          echo "For more info: https://docs.github.com/en/issues/managing-your-tasks-with-tasklists/creating-a-tasklist"
+          echo "For more info: https://docs.github.com/en/issues/managing-your-tasks-with-tasklists/creating-a-tasklist" >> issue_list.txt
           echo "---------------------------------------------------------------------" >> issue_list.txt
           echo "\`\`\`[tasklist]" >> issue_list.txt
           echo "### Tasks" >> issue_list.txt
