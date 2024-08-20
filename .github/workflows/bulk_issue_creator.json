@@ -1,0 +1,8 @@
+{
+  "title": "Move on from deprecated `pkg_resources` api",
+  "body": "Shift the code from `pkg_resources` to `importlib.resources` api\n\nMigration guide: https://importlib-resources.readthedocs.io/en/latest/migration.html\nDecision making story: https://github.com/openedx/XBlock/issues/676\nReference PR to take learning from: https://github.com/openedx/xblock-sdk/pull/350/files\n\n**Prerequisites:**\n- Support of python 3.8 should be dropped. [Relevant epic](https://github.com/openedx/public-engineering/issues/274)\n\n**Acceptance Criteria:**\n- Make sure the repository is using xblock version 5.0.0 or above. Upgrade the version if required, preferably via the make upgrade command.\n- There should be no usage of `pkg_resources` in the repository\n- Test cases should be passed\n- XBlock should perform all of its functionality related to change (loading resources)\n\n```[tasklist]\n### Tasks\n- [x] xblock https://github.com/openedx/XBlock/issues/676\n- [x] feedback-xblock https://github.com/openedx/FeedbackXBlock/pull/58\n- [ ] xblock-sdk https://github.com/openedx/xblock-sdk/pull/350\n```",
+  "labels": [
+    "bug",
+    "maintenance"
+  ]
+}
