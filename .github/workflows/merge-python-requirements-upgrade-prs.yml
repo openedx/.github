@@ -30,7 +30,7 @@ on:
 jobs:
   get_list_of_prs:
     name: Get list of PRs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     outputs:
       urls: ${{ steps.generate_urls.outputs.urls }}
     steps:
@@ -62,7 +62,7 @@ jobs:
           
 
   merge_pr:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs:
       - get_list_of_prs
     if: needs.get_list_of_prs.outputs.urls != '[]' # Skip if there are no URLs found

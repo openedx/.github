@@ -62,7 +62,7 @@ on:
 jobs:
 
   repos_list:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     outputs:
       output1: ${{ steps.repos_list.outputs.list }}
@@ -74,7 +74,7 @@ jobs:
         echo "::set-output name=list::[${{github.event.inputs.repos_list}}]"
 
   bulk_update:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [ repos_list ]
     strategy:
       fail-fast: false
