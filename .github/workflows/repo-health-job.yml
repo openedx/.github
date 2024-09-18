@@ -73,7 +73,7 @@ on:
 
 jobs:
   repo_health_check:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
