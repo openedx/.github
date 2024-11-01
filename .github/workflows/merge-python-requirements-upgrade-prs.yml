@@ -77,17 +77,6 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Checkout tools repo
-        uses: actions/checkout@v4
-        with:
-          repository: openedx/tubular
-          path: tubular
-
-      - name: Setup tubular
-        run: |
-          cd tubular
-          pip install -e .
-
       - name: Extract parameters from URL
         run: |
           url="${{ matrix.url }}"
