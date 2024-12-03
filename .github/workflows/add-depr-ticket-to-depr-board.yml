@@ -86,7 +86,8 @@ jobs:
         id: slack
         uses: slackapi/slack-github-action@v2.0.0
         with:
-          channel-id: CGB0S3L12
-          slack-message: "Incoming DEPR ticket: ${{ github.event.issue.title }}\nAuthor: ${{ github.event.issue.user.login }}\nURL: ${{ github.event.issue.html_url }}"
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          method: chat.postMessage
+          token:  ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel: "CGB0S3L12"
+            text: "Incoming DEPR ticket: ${{ github.event.issue.title }}\nAuthor: ${{ github.event.issue.user.login }}\nURL: ${{ github.event.issue.html_url }}"
