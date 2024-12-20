@@ -7,6 +7,7 @@ If you're trying to learn more, check out...
 
 * the homepage: [openedx.org](https://openedx.org),
 * the discussion forums: [discuss.openedx.org](https://discuss.openedx.org/),
+* the wiki: [openedx.atlassian.net](https://openedx.atlassian.net/wiki/spaces/COMM),
 * the main repository, containing the Learning Management System (LMS) and Content Managament Studio (CMS): [edx-platform](https://github.com/openedx/edx-platform),
 * the community-supported installation method (also a development tool!): [tutor](https://docs.tutor.overhang.io/).
 * [the roadmap for future work](https://github.com/orgs/openedx/projects/4)
