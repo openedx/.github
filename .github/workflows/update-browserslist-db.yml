@@ -34,13 +34,13 @@ jobs:
             Updated browserslist DB
           branch: update-browserslist-db
 
-    - name: Auto-Approve the Pull Request
-      uses: hmarr/auto-approve-action@v3
-      with:
-        github-token: ${{ secrets.requirements_bot_github_token }}
-        pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+    - name: Auto-approve Pull Request
+      if: steps.cpr.outputs.pull-request-operation == 'created'
+      run: gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}"
+      env:
+        GH_TOKEN: ${{ secrets.requirements_bot_github_token }}
 
     - name: Enable Pull Request Automerge
-      run: gh pr merge --merge --auto "${{ steps.cpr.outputs.pull-request-number }}"
+      run: gh pr merge --squash --auto "${{ steps.cpr.outputs.pull-request-number }}"
       env:
-        GITHUB_TOKEN: ${{ secrets.requirements_bot_github_token }}
+        GH_TOKEN: ${{ secrets.requirements_bot_github_token }}
