@@ -8,27 +8,19 @@ on:
 jobs:
   update-dep:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [16]
-        npm: [8.5.x]
-
     steps:
-    - name: Check out the repo
+    - name: Checkout the repo
       uses: actions/checkout@v4
-      
-    - name: Install node
+
+    - name: Install Node
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node }}
-    
-    - name: Install dependencies
-      run: npm install -g npm@${{ matrix.npm }}
+        node-version-file: '.nvmrc'
 
-    - name: Install Packages 
+    - name: Install Dependencies
       run: npm ci
 
-    - name: Update dependencies
+    - name: Update browserslist DB
       run: npx update-browserslist-db@latest
 
     - name: Create Pull Request
@@ -42,10 +34,13 @@ jobs:
             Updated browserslist DB
           branch: update-browserslist-db
 
-    - name: Enable Pull Request Automerge
-      if: steps.cpr.outputs.pull-request-operation == 'created'
-      uses: peter-evans/enable-pull-request-automerge@v2
+    - name: Auto-Approve the Pull Request
+      uses: hmarr/auto-approve-action@v3
       with:
-        token: ${{ secrets.requirements_bot_github_token }}
+        github-token: ${{ secrets.requirements_bot_github_token }}
         pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-        merge-method: squash
+
+    - name: Enable Pull Request Automerge
+      run: gh pr merge --merge --auto "${{ steps.cpr.outputs.pull-request-number }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.requirements_bot_github_token }}
