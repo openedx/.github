@@ -38,9 +38,9 @@ jobs:
       if: steps.cpr.outputs.pull-request-operation == 'created'
       run: gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}"
       env:
-        GH_TOKEN: ${{ secrets.requirements_bot_github_token }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Enable Pull Request Automerge
       run: gh pr merge --squash --auto "${{ steps.cpr.outputs.pull-request-number }}"
       env:
-        GH_TOKEN: ${{ secrets.requirements_bot_github_token }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
