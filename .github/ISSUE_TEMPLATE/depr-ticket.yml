@@ -36,7 +36,7 @@ body:
     id: breaking-change-unblocked-date
     attributes:
       label: Earliest Breaking Changes Unblocked Date
-      description: When is the earliest date you may make breaking changes? A good default is the later of 6 months after the RFC Start Date, or 1 month after the Target Transition Unblocked Date. This date can be negotiated as part of the RFC process. 
+      description: When is the earliest date you may make breaking changes? A good default is the later of 6 months after the RFC Start Date, or 1 month after the Target Transition Unblocked Date. This date can be negotiated as part of the RFC process. See [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more details.
       placeholder: "2025-07-15"
     validations:
       required: true
