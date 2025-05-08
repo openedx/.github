@@ -20,7 +20,7 @@ body:
     id: accept-date
     attributes:
       label: Target Plan Accepted Date
-      description: When is the target date for getting the proposal reviewed and accepted? A good default is approximately 2 weeks from when the RFC is communicated (see [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html)).
+      description: When is the target date for getting the proposal reviewed and accepted? A good default is approximately 2 weeks from the RFC Start Date (see [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html)).
       placeholder: "2025-01-29"
     validations:
       required: true
