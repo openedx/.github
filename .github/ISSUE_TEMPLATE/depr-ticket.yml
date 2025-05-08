@@ -12,7 +12,7 @@ body:
     id: rfc-start-date
     attributes:
       label: RFC Start Date
-      description: The start date of the RFC (possibly today)
+      description: The start date of the RFC (Request for Comments). Use the day you will announce this DEPR ticket on discourse (possibly today).
       placeholder: "2025-01-15"
     validations:
       required: true
@@ -28,7 +28,7 @@ body:
     id: transition-unblocked-date
     attributes:
       label: Target Transition Unblocked Date
-      description: When is the target date for having a replacement ready, and unblocking operators for preparing for the final breaking change?
+      description: When is the target date for having a replacement ready, and unblocking operators for preparing for the final breaking change? See [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more details.
       placeholder: "2025-03-15"
     validations:
       required: true
