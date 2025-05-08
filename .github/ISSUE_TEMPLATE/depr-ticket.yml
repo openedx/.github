@@ -46,10 +46,10 @@ body:
       label: Earliest Open edX Named Release with Breaking Changes
       description: What is the earliest named release without the breaking changes? Choose the first release cut date after the Earliest Breaking Changes Unblocked Date. Approximate dates are listed below; for exact dates, see the [release schedule](https://openedx.atlassian.net/wiki/spaces/COMM/pages/3613392957/Open+edX+Release+Schedule) or reach out to the Build Test Release working group (#wg-build-test-release in Slack).
       options:
-       - Ulmo - 2025-10
-       - Verawood - 2026-04
-       - W - 2026-10
-       - X - 2027-04
+        - Ulmo - 2025-10
+        - Verawood - 2026-04
+        - W - 2026-10
+        - X - 2027-04
     validations:
       required: true
   - type: textarea
