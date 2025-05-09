@@ -9,27 +9,48 @@ body:
         Refer to [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more detail on the deprecation and removal process. This ticket should only be used for proposing the removal of an Open edX technology.
         Please leave [DEPR] in the title of your ticket!
   - type: input
-    id: todays-date
+    id: rfc-start-date
     attributes:
-      label: Proposal Date
-      description: The start date of this proposal (likely today)
-      placeholder: "2024-01-15"
+      label: RFC Start Date
+      description: The start date of the RFC (Request for Comments). Use the day you will announce this DEPR ticket on discourse (possibly today).
+      placeholder: "2025-01-15"
     validations:
       required: true
   - type: input
     id: accept-date
     attributes:
-      label: Target Ticket Acceptance Date
-      description: When is the target date for getting this proposal reviewed and accepted? A good default is approximately 2 weeks from when the ticket is communicated (see [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html)).
-      placeholder: "2024-01-29"
+      label: Target Plan Accepted Date
+      description: When is the target date for getting the proposal reviewed and accepted? A good default is approximately 2 weeks from the RFC Start Date (see [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html)).
+      placeholder: "2025-01-29"
     validations:
       required: true
   - type: input
+    id: transition-unblocked-date
+    attributes:
+      label: Target Transition Unblocked Date
+      description: When is the target date for having a replacement ready, and unblocking operators for preparing for the final breaking change? See [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more details.
+      placeholder: "2025-03-15"
+    validations:
+      required: true
+  - type: input
+    id: breaking-change-unblocked-date
+    attributes:
+      label: Earliest Breaking Changes Unblocked Date
+      description: When is the earliest date you may make breaking changes? A good default is the later of 6 months after the RFC Start Date, or 1 month after the Target Transition Unblocked Date. This date can be negotiated as part of the RFC process. See [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more details.
+      placeholder: "2025-07-15"
+    validations:
+      required: true
+  - type: dropdown
     id: named-release-without
     attributes:
-      label: Earliest Open edX Named Release Without This Functionality
-      description: What is the earliest named release without this code? Named releases are generally CUT in early April and early October. Use "Redwood - 2024-04", or "Sumac - 2024-10", or "Teak - 2025-04" as examples. Please reach out to the Build Test Release working group (#wg-build-test-release in Slack) if you're not sure.
-      placeholder: "Redwood - 2024-04"
+      label: Earliest Open edX Named Release with Breaking Changes
+      description: What is the earliest named release without the breaking changes? Choose the first release cut date after the Earliest Breaking Changes Unblocked Date. Approximate dates are listed below; for exact dates, see the [release schedule](https://openedx.atlassian.net/wiki/spaces/COMM/pages/3613392957/Open+edX+Release+Schedule) or reach out to the Build Test Release working group (#wg-build-test-release in Slack).
+      options:
+        - Ulmo - 2025-10
+        - Verawood - 2026-04
+        - W - 2026-10
+        - X - 2027-04
+        - Y - 2027-10
     validations:
       required: true
   - type: textarea
