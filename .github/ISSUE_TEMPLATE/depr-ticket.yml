@@ -28,8 +28,8 @@ body:
     id: transition-unblocked-date
     attributes:
       label: Target Transition Unblocked Date
-      description: When is the target date for having a replacement ready, and unblocking operators for preparing for the final breaking change? See [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more details.
-      placeholder: "2025-03-15"
+      description: What is an estimated target date for unblocking operators for their transition tasks in preparation for any final breaking change? Where a replacement is required, the replacement must be ready. See [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more details.
+      placeholder: "Estimated March or April 2025"
     validations:
       required: true
   - type: input
@@ -37,7 +37,7 @@ body:
     attributes:
       label: Earliest Breaking Changes Unblocked Date
       description: When is the earliest date you may make breaking changes? A good default is the later of 6 months after the RFC Start Date, or 1 month after the Target Transition Unblocked Date. This date can be negotiated as part of the RFC process. See [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more details.
-      placeholder: "2025-07-15"
+      placeholder: "Later of 2025-07-15 or the actual Transition Unblocked Date + 1 month"
     validations:
       required: true
   - type: dropdown
@@ -96,10 +96,18 @@ body:
     validations:
       required: false
   - type: textarea
-    id: tasks
+    id: transition-unblocked-tasks
     attributes:
       label: Task List
-      description: A list of tasks needed to deprecate or remove this feature and complete the DEPR.
-      placeholder: "- [ ] Task 1 needed to deprecate or remove this feature."
+      description: A list of tasks needed to move the ticket to Transition Unblocked. This includes any task required to unblock operators for their transition tasks in preparation for any final breaking change. Where a replacement is required, this includes tasks for completing the replacement. See [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more details.
+      placeholder: "- [ ] Task 1 needed to deprecate or replace this feature."
+    validations:
+      required: false
+  - type: textarea
+    id: removal-tasks
+    attributes:
+      label: Task List
+      description: A list of tasks needed to remove this feature and complete the DEPR.
+      placeholder: "- [ ] Task 1 needed to remove this feature."
     validations:
       required: false
