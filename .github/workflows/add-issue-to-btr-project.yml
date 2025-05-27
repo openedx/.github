@@ -1,0 +1,31 @@
+name: Add release testing issues to BTR project with needs triage label
+on:
+  workflow_call:
+    secrets:
+      GITHUB_APP_ID:
+        description: 'GitHub App ID for authentication'
+        required: true
+      GITHUB_APP_PRIVATE_KEY:
+        description: 'GitHub App private key for authentication'
+        required: true
+
+jobs:
+  add-issue-to-project:
+    name: "Add release testing issue to project"
+    if: github.event.label.name == 'release testing'
+    uses: openedx/.github/.github/workflows/add-issue-to-a-project.yml@master
+    secrets:
+      GITHUB_APP_ID: ${{ secrets.GITHUB_APP_ID }}
+      GITHUB_APP_PRIVATE_KEY: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
+    with:
+      PROJECT_NUMBER: 28
+
+  add_needs_triage_label:
+    name: "Add needs triage label"
+    runs-on: ubuntu-latest
+    if: github.event.label.name == 'release testing' && !contains(github.event.issue.labels.*.name, 'needs triage')
+    steps:
+      - name: Apply needs triage label
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: needs triage
