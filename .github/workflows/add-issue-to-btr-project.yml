@@ -1,5 +1,12 @@
+# Action to add issues with the 'release testing' label to the BTR project
+# and apply the 'needs triage' label if it doesn't already have it.
+# This workflow is triggered by the addition of the 'release testing' label
+# to an issue in the repository.
+
 name: Add release testing issues to BTR project with needs triage label
 on:
+  # This action is meant to be used from other actions.
+  # https://docs.github.com/en/actions/learn-github-actions/reusing-workflows
   workflow_call:
     secrets:
       GITHUB_APP_ID:
@@ -10,8 +17,10 @@ on:
         required: true
 
 jobs:
+  # Add the issue to the BTR project if it has the 'release testing' label
+  # then add the 'needs triage' label if it doesn't already have it
   add-issue-to-project:
-    name: "Add release testing issue to project"
+    name: "Add release testing issue to the BTR project"
     if: github.event.label.name == 'release testing'
     uses: openedx/.github/.github/workflows/add-issue-to-a-project.yml@master
     secrets:
@@ -21,7 +30,7 @@ jobs:
       PROJECT_NUMBER: 28
 
   add_needs_triage_label:
-    name: "Add needs triage label"
+    name: "Add needs triage label for triage"
     runs-on: ubuntu-latest
     if: github.event.label.name == 'release testing' && !contains(github.event.issue.labels.*.name, 'needs triage')
     steps:
