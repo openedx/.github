@@ -29,7 +29,7 @@ jobs:
     with:
       PROJECT_NUMBER: 28
 
-  add_needs_triage_label:
+  add-needs-triage-label:
     name: "Add needs triage label for triage"
     runs-on: ubuntu-latest
     if: github.event.label.name == 'release testing' && !contains(github.event.issue.labels.*.name, 'needs triage')
