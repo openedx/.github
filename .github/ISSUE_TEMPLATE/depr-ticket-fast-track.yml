@@ -6,7 +6,10 @@ body:
   - type: markdown
     attributes:
       value: |
-        The standard DEPR process is described in [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html). This issue will follow a [simpler, expedited version of that process](https://github.com/openedx/.github/issues/175). Slack message `#wg-depr-slash-and-burn` if you are confused.
+        This announces a pre-approved breaking change. These include planned upgrade tasks, removal of unreachable code, and subtasks of other approved DEPR tickets. Consult the DEPR Working Group if unsure.
+        
+        The standard DEPR process is described in [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html). This ticket is using the new ["Fast Track" Process]((https://github.com/openedx/.github/issues/175)), which means it will skip the Request-For-Comments (RFC) stages and move right to "Transition Unblocked."
+      
         Please leave [DEPR] in the title of your ticket!
   - type: input
     id: breaking-change-unblocked-date
