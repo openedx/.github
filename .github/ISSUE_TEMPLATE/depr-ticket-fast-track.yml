@@ -13,7 +13,7 @@ body:
     attributes:
       label: Earliest Breaking Changes Unblocked Date
       description: When is the earliest date you may make breaking changes? A good default is 2 weeks from today, giving operators time to transition.
-      placeholder: "2025-01-01"
+      placeholder: "2025-01-14"
     validations:
       required: true
   - type: textarea
