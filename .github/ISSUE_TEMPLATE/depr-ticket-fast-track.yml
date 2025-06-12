@@ -1,5 +1,5 @@
 name: 🚅 Fast-Track Deprecation/Removal (DEPR)
-description: Per OEP-21, use this template when you are making a pre-approved breaking change. These include pre-planned upgrade tasks, removal of unreachable code, and subtasks of other approved DEPR tickets. Consult the DEPR Working Group if unsure.
+description: Announce a pre-approved breaking change. These include planned upgrade tasks, removal of unreachable code, and subtasks of other approved DEPR tickets. Consult the DEPR Working Group if unsure.
 title: "[DEPR]: <Technology Name>"
 labels: ["DEPR"]
 body:
