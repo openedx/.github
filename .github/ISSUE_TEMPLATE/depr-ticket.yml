@@ -1,4 +1,4 @@
-name: 🌘 Deprecation and Removal (DEPR) Ticket
+name: 🌘 Standard Deprecation/Removal (DEPR)
 description: Per OEP-21, use this template to begin the technology deprecation process.
 title: "[DEPR]: <Technology Name>"
 labels: ["DEPR"]
