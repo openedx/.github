@@ -1,0 +1,40 @@
+name: 🚅 Fast-Track Deprecation/Removal (DEPR)
+description: Per OEP-21, use this template when you are making a pre-approved breaking change. These include: Pre-planned upgrade tasks, removal of unreachable code, and subtasks of other approved DEPR tickets. Consult the DEPR Working Group if unsure.
+title: "[DEPR]: <Technology Name>"
+labels: ["DEPR"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Refer to [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more detail on the deprecation and removal process. This ticket should only be used for proposing the removal of an Open edX technology.
+        Please leave [DEPR] in the title of your ticket!
+  - type: input
+    id: breaking-change-unblocked-date
+    attributes:
+      label: Earliest Breaking Changes Unblocked Date
+      description: When is the earliest date you may make breaking changes? A good default is 2 weeks from today, giving operators time to transition.
+      placeholder: "2025-01-01"
+    validations:
+      required: true
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Rationale
+      description: Explain, briefly, why this breaking change needs to happen. Because you are fast-tracking this, please link to supporting information, such as an upgrade plan.
+    validations:
+      required: true
+  - type: textarea
+    id: removal
+    attributes:
+      label: Description
+      description: What functionality is being removed? What functionality, if any, replaces it? How can operators transition?
+    validations:
+      required: true
+  - type: textarea
+    id: removal-tasks
+    attributes:
+      label: Task List
+      description: (Optional) A list of tasks or PRs to complete this
+      placeholder: "- [ ] Task 1"
+    validations:
+      required: false
