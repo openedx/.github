@@ -40,6 +40,7 @@ jobs:
               ;;
             *)
               echo "Unknown board name: '${{ inputs.board_name }}'" >&2
+              echo "Valid board names: cc-edx-platform, cc-frontend-apps, cc-core-apps, cc-other-utils" >&2
               exit 1
               ;;
           esac
