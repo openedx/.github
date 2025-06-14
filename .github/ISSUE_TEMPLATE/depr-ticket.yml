@@ -1,4 +1,4 @@
-name: 🌘 Deprecation and Removal (DEPR) Ticket
+name: 🌘 Standard Deprecation/Removal (DEPR)
 description: Per OEP-21, use this template to begin the technology deprecation process.
 title: "[DEPR]: <Technology Name>"
 labels: ["DEPR"]
@@ -28,8 +28,8 @@ body:
     id: transition-unblocked-date
     attributes:
       label: Target Transition Unblocked Date
-      description: When is the target date for having a replacement ready, and unblocking operators for preparing for the final breaking change? See [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more details.
-      placeholder: "2025-03-15"
+      description: What is an estimated target date for unblocking operators for their transition tasks in preparation for any final breaking change? Where a replacement is required, the replacement must be ready. See [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more details.
+      placeholder: "Estimated March or April 2025"
     validations:
       required: true
   - type: input
@@ -37,14 +37,14 @@ body:
     attributes:
       label: Earliest Breaking Changes Unblocked Date
       description: When is the earliest date you may make breaking changes? A good default is the later of 6 months after the RFC Start Date, or 1 month after the Target Transition Unblocked Date. This date can be negotiated as part of the RFC process. See [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more details.
-      placeholder: "2025-07-15"
+      placeholder: "2025-07-05, or one month after the ticket moves to Transition Unblocked, whichever comes later."
     validations:
       required: true
   - type: dropdown
     id: named-release-without
     attributes:
       label: Earliest Open edX Named Release with Breaking Changes
-      description: What is the earliest named release without the breaking changes? Choose the first release cut date after the Earliest Breaking Changes Unblocked Date. Approximate dates are listed below; for exact dates, see the [release schedule](https://openedx.atlassian.net/wiki/spaces/COMM/pages/3613392957/Open+edX+Release+Schedule) or reach out to the Build Test Release working group (#wg-build-test-release in Slack).
+      description: What is the earliest named release with the breaking changes? Choose the first release cut date after the Earliest Breaking Changes Unblocked Date. Approximate dates are listed below; for exact dates, see the [release schedule](https://openedx.atlassian.net/wiki/spaces/COMM/pages/3613392957/Open+edX+Release+Schedule) or reach out to the Build Test Release working group (#wg-build-test-release in Slack).
       options:
         - Ulmo - 2025-10
         - Verawood - 2026-04
@@ -82,24 +82,25 @@ body:
     validations:
       required: false
   - type: textarea
-    id: migration
-    attributes:
-      label: Migration
-      description: If automated migration will be needed, explain your migration plan.
-    validations:
-      required: false
-  - type: textarea
     id: addl-info
     attributes:
       label: Additional Info
-      description: If there is any additional publicly sharable information or data from your earlier analysis, include that.
+      description: If there is any additional publicly sharable information or data from your earlier analysis, include that. Will there need to be any manual database migrations needed, for example?
     validations:
       required: false
   - type: textarea
-    id: tasks
+    id: transition-unblocked-tasks
     attributes:
       label: Task List
-      description: A list of tasks needed to deprecate or remove this feature and complete the DEPR.
-      placeholder: "- [ ] Task 1 needed to deprecate or remove this feature."
+      description: A list of tasks needed to move the ticket to Transition Unblocked. This includes any task required to unblock operators for their transition tasks in preparation for any final breaking change. Where a replacement is required, this includes tasks for completing the replacement. See [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more details.
+      placeholder: "- [ ] Task 1 needed to deprecate or replace this feature."
+    validations:
+      required: false
+  - type: textarea
+    id: removal-tasks
+    attributes:
+      label: Task List
+      description: A list of tasks needed to remove this feature and complete the DEPR.
+      placeholder: "- [ ] Task 1 needed to remove this feature."
     validations:
       required: false
