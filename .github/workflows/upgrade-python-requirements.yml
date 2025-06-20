@@ -98,7 +98,7 @@ jobs:
 
       - name: Send failure notification
         if: ${{ failure() && inputs.email_address }}
-        uses: dawidd6/action-send-mail@v5
+        uses: dawidd6/action-send-mail@v6
         with:
           server_address: email-smtp.us-east-1.amazonaws.com
           server_port: 465
@@ -111,7 +111,7 @@ jobs:
 
       - name: Send success notification
         if: ${{ inputs.send_success_notification && inputs.email_address && steps.createpullrequest.outputs.generated_pr }}
-        uses: dawidd6/action-send-mail@v5
+        uses: dawidd6/action-send-mail@v6
         with:
           server_address: email-smtp.us-east-1.amazonaws.com
           server_port: 465
