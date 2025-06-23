@@ -1,0 +1,52 @@
+name: Add Issue or PR to a Core Contributor project board
+on:
+  workflow_call:
+    inputs:
+      board_name:
+        required: true
+        type: string
+    secrets:
+      projects_access_token:
+        required: true
+
+jobs:
+  add-item:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set item URL
+        id: set_item_url
+        run: |
+          if [[ "${{ github.event.issue.html_url }}" != "" ]]; then
+            echo "item_url=${{ github.event.issue.html_url }}" >> $GITHUB_OUTPUT
+          else
+            echo "item_url=${{ github.event.pull_request.html_url }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Map board name to board URL
+        id: map_board
+        run: |
+          case "${{ inputs.board_name }}" in
+            cc-edx-platform)
+              echo "project_number=79" >> $GITHUB_OUTPUT
+              ;;
+            cc-frontend-apps)
+              echo "project_number=80" >> $GITHUB_OUTPUT
+              ;;
+            cc-core-apps)
+              echo "project_number=81" >> $GITHUB_OUTPUT
+              ;;
+            cc-other-utils)
+              echo "project_number=82" >> $GITHUB_OUTPUT
+              ;;
+            *)
+              echo "Unknown board name: '${{ inputs.board_name }}'" >&2
+              echo "Valid board names: cc-edx-platform, cc-frontend-apps, cc-core-apps, cc-other-utils" >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Add item to board
+        run: |
+          gh project item-add ${{ steps.map_board.outputs.project_number }} --owner openedx --url ${{ steps.set_item_url.outputs.item_url }}
+        env:
+          GH_TOKEN: ${{ secrets.projects_access_token }}
