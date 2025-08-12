@@ -93,6 +93,18 @@ jobs:
           cd $GITHUB_WORKSPACE
           make upgrade
 
+      - name: prepare add-paths for PR
+        run: |
+          ADD_PATHS="requirements"
+          
+          if [ -d "scripts" ]; then
+            ADD_PATHS="${ADD_PATHS}"$'\nscripts/**/requirements*'
+          
+          # Set the environment variable for use in subsequent steps
+          echo "ADD_PATHS<<EOF" >> $GITHUB_ENV
+          echo "$ADD_PATHS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
       - name: setup pull_request_creator
         if: ${{ env.is_fork == 'false' }}
         run: |
@@ -124,9 +136,7 @@ jobs:
         with:
           branch: "upgrade-python-requirements"
           branch-suffix: short-commit-hash
-          add-paths: |
-            requirements*
-            **/requirements*
+          add-paths: ${{ env.ADD_PATHS }}
           commit-message: |
             chore: Upgrade Python requirements
 
