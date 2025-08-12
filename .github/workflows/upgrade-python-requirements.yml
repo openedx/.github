@@ -65,12 +65,14 @@ jobs:
 
       - name: detect fork status
         run: |
-          if [[ "${{ github.event.repository.fork }}" == "true" ]]; then
+          # Check if we have access to the requirements bot token
+          # If not available, use fork-friendly approach regardless of fork status
+          if [[ -z "${{ secrets.requirements_bot_github_token }}" ]]; then
             echo "is_fork=true" >> $GITHUB_ENV
-            echo "This is a forked repository"
+            echo "Using fork-friendly approach: bot token not available"
           else
             echo "is_fork=false" >> $GITHUB_ENV
-            echo "This is not a forked repository"
+            echo "Using standard approach: bot token available"
           fi
 
       - uses: actions/checkout@v4
@@ -99,6 +101,7 @@ jobs:
           
           if [ -d "scripts" ]; then
             ADD_PATHS="${ADD_PATHS}"$'\nscripts/**/requirements*'
+          fi
           
           # Set the environment variable for use in subsequent steps
           echo "ADD_PATHS<<EOF" >> $GITHUB_ENV
