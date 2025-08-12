@@ -135,7 +135,7 @@ jobs:
       - name: create pull request (fork-friendly)
         if: ${{ env.is_fork == 'true' }}
         id: createpullrequest_fork
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           branch: "upgrade-python-requirements"
           branch-suffix: short-commit-hash
