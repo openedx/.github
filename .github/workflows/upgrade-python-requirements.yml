@@ -125,8 +125,8 @@ jobs:
           branch: "upgrade-python-requirements"
           branch-suffix: short-commit-hash
           add-paths: |
-            requirements
-            scripts/**/requirements*
+            requirements*
+            **/requirements*
           commit-message: |
             chore: Upgrade Python requirements
 
