@@ -65,12 +65,14 @@ jobs:
 
       - name: detect fork status
         run: |
-          if [[ "${{ github.event.repository.fork }}" == "true" ]]; then
+          # Check if we have access to the requirements bot token
+          # If not available, use fork-friendly approach regardless of fork status
+          if [[ -z "${{ secrets.requirements_bot_github_token }}" ]]; then
             echo "is_fork=true" >> $GITHUB_ENV
-            echo "This is a forked repository"
+            echo "Using fork-friendly approach: bot token not available"
           else
             echo "is_fork=false" >> $GITHUB_ENV
-            echo "This is not a forked repository"
+            echo "Using standard approach: bot token available"
           fi
 
       - uses: actions/checkout@v4
@@ -92,6 +94,19 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           make upgrade
+
+      - name: prepare add-paths for PR
+        run: |
+          ADD_PATHS="requirements"
+          
+          if [ -d "scripts" ]; then
+            ADD_PATHS="${ADD_PATHS}"$'\nscripts/**/requirements*'
+          fi
+          
+          # Set the environment variable for use in subsequent steps
+          echo "ADD_PATHS<<EOF" >> $GITHUB_ENV
+          echo "$ADD_PATHS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: setup pull_request_creator
         if: ${{ env.is_fork == 'false' }}
@@ -124,9 +139,7 @@ jobs:
         with:
           branch: "upgrade-python-requirements"
           branch-suffix: short-commit-hash
-          add-paths: |
-            requirements*
-            **/requirements*
+          add-paths: ${{ env.ADD_PATHS }}
           commit-message: |
             chore: Upgrade Python requirements
 
