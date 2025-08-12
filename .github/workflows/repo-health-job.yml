@@ -81,7 +81,7 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: setup python
         uses: actions/setup-python@v5
@@ -89,7 +89,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Clone edx-repo-health repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: openedx/edx-repo-health
           path: edx-repo-health
@@ -101,21 +101,21 @@ jobs:
           python3 -m pip install -r edx-repo-health/requirements/pip-tools.txt
 
       - name: Clone testeng-ci repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: openedx/testeng-ci
           path: testeng-ci
           ref: "master"
 
       - name: Clone repo-tools repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: openedx/repo-tools
           path: repo_tools
           ref: master
 
       - name: Clone repo-health-data repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ inputs.TARGET_REPO_TO_STORE_REPORTS }}
           path: repo-health-data
