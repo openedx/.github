@@ -80,7 +80,7 @@ jobs:
           ref: ${{ env.target_branch }}
 
       - name: setup python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ inputs.python_version }}
       # With the updated package lxml>5.0, now the system dev packages are necessary
