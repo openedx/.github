@@ -91,7 +91,7 @@ body:
   - type: textarea
     id: transition-unblocked-tasks
     attributes:
-      label: Task List
+      label: Transition Unblocked Tasks
       description: A list of tasks needed to move the ticket to Transition Unblocked. This includes any task required to unblock operators for their transition tasks in preparation for any final breaking change. Where a replacement is required, this includes tasks for completing the replacement. See [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html) for more details.
       placeholder: "- [ ] Task 1 needed to deprecate or replace this feature."
     validations:
@@ -99,7 +99,7 @@ body:
   - type: textarea
     id: removal-tasks
     attributes:
-      label: Task List
+      label: Feature Removal Tasks
       description: A list of tasks needed to remove this feature and complete the DEPR.
       placeholder: "- [ ] Task 1 needed to remove this feature."
     validations:
