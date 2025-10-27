@@ -157,7 +157,7 @@ jobs:
 
       - name: Upload sqlite db as artifact
         if: ${{ inputs.DASHBOARD_NAME == 'repo_health' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: sqlite db artifact
           path: dashboards/dashboard.sqlite3
