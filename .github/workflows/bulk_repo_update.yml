@@ -81,7 +81,7 @@ jobs:
         repos: ${{fromJson(needs.repos_list.outputs.output1)}}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
             repository: ${{ github.event.inputs.organization}}/${{ matrix.repos }}
             token: ${{ secrets.requirements_bot_github_token }}
