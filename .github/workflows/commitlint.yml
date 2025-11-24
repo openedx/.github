@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # Fetch 100 commits.  Should be enough?
           fetch-depth: 100
