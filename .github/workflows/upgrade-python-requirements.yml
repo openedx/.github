@@ -90,6 +90,12 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y libxml2-dev libxslt-dev
 
+      # As we begin to move repos to uv we need to install it
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
       - name: make upgrade
         run: |
           cd $GITHUB_WORKSPACE
@@ -98,11 +104,11 @@ jobs:
       - name: prepare add-paths for PR
         run: |
           ADD_PATHS="requirements"
-          
+
           if [ -d "scripts" ]; then
             ADD_PATHS="${ADD_PATHS}"$'\nscripts/**/requirements*'
           fi
-          
+
           # Set the environment variable for use in subsequent steps
           echo "ADD_PATHS<<EOF" >> $GITHUB_ENV
           echo "$ADD_PATHS" >> $GITHUB_ENV
