@@ -31,7 +31,7 @@ on:
       python_version:
         description: "The version of python to use for running this job. Defaults to python3.11"
         required: false
-        default: "3.11"
+        default: "3.12"
         type: string
     secrets:
       requirements_bot_github_token:
