@@ -11,10 +11,10 @@ on:
         required: true
       REPO_HEALTH_GOOGLE_CREDS_FILE:
         description: "Link to the repo health credentials file"
-        required: true
+        required: false
       READTHEDOCS_API_KEY:
         description: "API Key for READ THE DOCS Access"
-        required: true
+        required: false
       EMAIL_ADDRESS_FOR_ALERTS:
         description: "Email Address for the alerts"
         required: false
@@ -54,6 +54,10 @@ on:
         description: "Repo health repositories sheet ID"
         type: string
         default: "0"
+      TARGET_REPO_BRANCH:
+        description: "Branch of TARGET_REPO_TO_STORE_REPORTS to push health data to"
+        type: string
+        default: "master"   # ← existing callers continue working with no changes
       TARGET_REPO_TO_STORE_REPORTS:
         description: "Target repo to store the csv reports & results i.e. org/repo-name"
         type: string
@@ -119,7 +123,7 @@ jobs:
         with:
           repository: ${{ inputs.TARGET_REPO_TO_STORE_REPORTS }}
           path: repo-health-data
-          ref: master
+          ref: ${{ inputs.TARGET_REPO_BRANCH }}
           token: ${{ secrets.REPO_HEALTH_BOT_TOKEN}}
 
       - name: Run repo health org script
