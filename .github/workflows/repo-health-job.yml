@@ -38,6 +38,10 @@ on:
         description: "Branch of the edx-repo-health repo to check out"
         type: string
         default: "master"
+      MAX_REPOS:
+        description: "Maximum number of repositories to process. Leave empty to process all."
+        type: string
+        default: ""
       ONLY_CHECK_THIS_REPOSITORY:
         description: "If you only want to run repo health on one repository, set this to org/name of said repository."
         type: string
@@ -140,6 +144,7 @@ jobs:
           REPO_HEALTH_GOOGLE_CREDS_FILE: ${{ secrets.REPO_HEALTH_GOOGLE_CREDS_FILE }}
           REPO_HEALTH_REPOS_WORKSHEET_ID: ${{ inputs.REPO_HEALTH_REPOS_WORKSHEET_ID }}
           REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL: ${{ inputs.REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL }}
+          MAX_REPOS: ${{ inputs.MAX_REPOS }}
         run: |
           bash edx-repo-health/scripts/repo-health-script.sh
 
