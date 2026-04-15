@@ -8,7 +8,7 @@ body:
       value: |
         Use this template to announce a pre-accepted breaking change. These include planned upgrade tasks, removal of unreachable code, and subtasks of other accepted DEPR tickets.
 
-        The standard DEPR process is described in [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html). This ticket is using the new ["Fast Track" process]((https://github.com/openedx/.github/issues/175)), which means it gets to skip the RFC (Request for Comments) period. After creating an issue using this template, you do not need to make forum post announcing the RFC period. Instead, **update the issue's status to "Transition Unblocked", and paste the issue link in `#cc-risky-changes` in order to warn site operators.** Once your chosen Breaking Change Unblocked date has passed, you are clear to make the breaking change.
+        The standard DEPR process is described in [OEP-21](https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0021-proc-deprecation.html). This ticket is using the new ["Fast Track" process]((https://github.com/openedx/.github/issues/175)), which means it gets to skip the RFC (Request for Comments) period. After creating an issue using this template, you do not need to make forum post announcing the RFC period. Instead, **update the issue's status to "Transition Unblocked", and paste the issue link in `#risky-changes` in order to warn site operators.** Once your chosen Breaking Change Unblocked date has passed, you are clear to make the breaking change.
 
         Please leave [DEPR] in the title of your ticket!
   - type: input
