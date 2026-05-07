@@ -75,6 +75,8 @@ jobs:
   bulk_update:
     runs-on: ubuntu-latest
     needs: [ repos_list ]
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -107,6 +109,8 @@ jobs:
         run: pip install ${{ github.event.inputs.packages }}
 
       - name: run script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ${{ github.event.inputs.script }}
 
       - name: setup pull_request_creator
