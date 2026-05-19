@@ -89,15 +89,15 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: setup python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Clone edx-repo-health repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: openedx/edx-repo-health
           path: edx-repo-health
@@ -109,21 +109,21 @@ jobs:
           python3 -m pip install -r edx-repo-health/requirements/pip-tools.txt
 
       - name: Clone testeng-ci repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: openedx/testeng-ci
           path: testeng-ci
           ref: "master"
 
       - name: Clone repo-tools repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: openedx/repo-tools
           path: repo_tools
           ref: master
 
       - name: Clone repo-health-data repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: ${{ inputs.TARGET_REPO_TO_STORE_REPORTS }}
           path: repo-health-data
@@ -167,13 +167,13 @@ jobs:
 
       - name: Upload sqlite db as artifact
         if: ${{ inputs.DASHBOARD_NAME == 'repo_health' }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: sqlite db artifact
           path: dashboards/dashboard.sqlite3
 
       - name: Send email on failure
-        uses: dawidd6/action-send-mail@v17
+        uses: dawidd6/action-send-mail@42942bc2f8fba4e611b459a018967a6a7c78c68c # v17
         if: ${{ failure() && inputs.ENABLE_EMAIL_ALERTS }}
         with:
           server_address: email-smtp.us-east-1.amazonaws.com
@@ -186,7 +186,7 @@ jobs:
           body: ${{ github.workflow }} in ${{ github.repository }} failed! For details, see https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: Send email on success
-        uses: dawidd6/action-send-mail@v17
+        uses: dawidd6/action-send-mail@42942bc2f8fba4e611b459a018967a6a7c78c68c # v17
         if: ${{ success() && inputs.ENABLE_EMAIL_ALERTS && inputs.ENABLE_EMAIL_ALERTS_ON_SUCCESS }}
         with:
           server_address: email-smtp.us-east-1.amazonaws.com
