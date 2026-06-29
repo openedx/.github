@@ -173,7 +173,7 @@ jobs:
           path: dashboards/dashboard.sqlite3
 
       - name: Send email on failure
-        uses: dawidd6/action-send-mail@42942bc2f8fba4e611b459a018967a6a7c78c68c # v17
+        uses: dawidd6/action-send-mail@94de994a9f6fffee200243214e17002e2920bb59 # v18
         if: ${{ failure() && inputs.ENABLE_EMAIL_ALERTS }}
         with:
           server_address: email-smtp.us-east-1.amazonaws.com
@@ -186,7 +186,7 @@ jobs:
           body: ${{ github.workflow }} in ${{ github.repository }} failed! For details, see https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: Send email on success
-        uses: dawidd6/action-send-mail@42942bc2f8fba4e611b459a018967a6a7c78c68c # v17
+        uses: dawidd6/action-send-mail@94de994a9f6fffee200243214e17002e2920bb59 # v18
         if: ${{ success() && inputs.ENABLE_EMAIL_ALERTS && inputs.ENABLE_EMAIL_ALERTS_ON_SUCCESS }}
         with:
           server_address: email-smtp.us-east-1.amazonaws.com
