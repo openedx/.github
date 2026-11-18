@@ -103,10 +103,29 @@ jobs:
           path: edx-repo-health
           ref: ${{ inputs.EDX_REPO_HEALTH_BRANCH }}
 
-      - name: Install pip & pip-tools
+      # The scripts install edx-repo-health's dependencies from uv.lock with `uv export`.
+      - name: Setup uv
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          # TODO: Remove once the old edx-repo-health layout (scripts/, requirements/) is
+          # no longer supported below. The old scripts never run uv, so its cache directory
+          # is never created and setup-uv's post-job cache save fails the run.
+          enable-cache: false
+
+      # edx-repo-health moved its scripts from scripts/ to src/scripts/ and dropped
+      # requirements/ for uv. Support both layouts so this workflow keeps working for
+      # EDX_REPO_HEALTH_BRANCH refs from before and after that change.
+      - name: Detect edx-repo-health layout
         run: |
-          python3 -m pip install -r edx-repo-health/requirements/pip.txt
-          python3 -m pip install -r edx-repo-health/requirements/pip-tools.txt
+          if [ -d edx-repo-health/src/scripts ]; then
+            echo "EDX_REPO_HEALTH_SCRIPTS=edx-repo-health/src/scripts" >> "$GITHUB_ENV"
+          else
+            echo "EDX_REPO_HEALTH_SCRIPTS=edx-repo-health/scripts" >> "$GITHUB_ENV"
+          fi
+          if [ -f edx-repo-health/requirements/pip.txt ]; then
+            python3 -m pip install -r edx-repo-health/requirements/pip.txt
+            python3 -m pip install -r edx-repo-health/requirements/pip-tools.txt
+          fi
 
       - name: Clone testeng-ci repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -147,7 +166,7 @@ jobs:
           REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL: ${{ inputs.REPO_HEALTH_OWNERSHIP_SPREADSHEET_URL }}
           MAX_REPOS: ${{ inputs.MAX_REPOS }}
         run: |
-          bash edx-repo-health/scripts/repo-health-script.sh
+          bash "${EDX_REPO_HEALTH_SCRIPTS}/repo-health-script.sh"
 
       - name: Run dependencies health dashboard script
         if: ${{ inputs.DASHBOARD_NAME == 'dependencies_health' }}
@@ -158,12 +177,12 @@ jobs:
           EDX_REPO_HEALTH_BRANCH: ${{ inputs.EDX_REPO_HEALTH_BRANCH }}
           ONLY_CHECK_THIS_REPOSITORY: ${{ inputs.ONLY_CHECK_THIS_REPOSITORY }}
         run: |
-          bash edx-repo-health/scripts/dependencies-health-script.sh
+          bash "${EDX_REPO_HEALTH_SCRIPTS}/dependencies-health-script.sh"
 
       - name: Run repo health artifact script
         if: ${{ inputs.DASHBOARD_NAME == 'repo_health' }}
         run: |
-          bash edx-repo-health/scripts/repo-health-artifact.sh
+          bash "${EDX_REPO_HEALTH_SCRIPTS}/repo-health-artifact.sh"
 
       - name: Upload sqlite db as artifact
         if: ${{ inputs.DASHBOARD_NAME == 'repo_health' }}
