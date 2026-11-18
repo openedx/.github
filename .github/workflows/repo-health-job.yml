@@ -106,6 +106,11 @@ jobs:
       # The scripts install edx-repo-health's dependencies from uv.lock with `uv export`.
       - name: Setup uv
         uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          # TODO: Remove once the old edx-repo-health layout (scripts/, requirements/) is
+          # no longer supported below. The old scripts never run uv, so its cache directory
+          # is never created and setup-uv's post-job cache save fails the run.
+          enable-cache: false
 
       # edx-repo-health moved its scripts from scripts/ to src/scripts/ and dropped
       # requirements/ for uv. Support both layouts so this workflow keeps working for
